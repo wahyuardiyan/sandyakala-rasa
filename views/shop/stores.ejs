@@ -1,0 +1,59 @@
+<%
+  const qs = (over) => {
+    const p = Object.assign({}, filters, over);
+    const parts = [];
+    Object.keys(p).forEach(function (k) { if (p[k] !== '' && p[k] !== 0 && p[k] !== undefined && !(k === 'urut' && p[k] === 'populer')) parts.push(k + '=' + encodeURIComponent(p[k])); });
+    return '/toko' + (parts.length ? '?' + parts.join('&') : '');
+  };
+  const hasFilter = filters.q || filters.kategori || filters.kota || filters.rating || filters.harga;
+%>
+<div class="sr-wrap sr-page">
+  <header class="sr-pagehead">
+    <h1><%= filters.q ? 'Hasil untuk “' + filters.q + '”' : 'Semua toko' %></h1>
+    <p><%= total > 0 ? total + ' toko' + (hasFilter ? ' cocok dengan pilihanmu.' : ' menerima pesanan di Sandyakala Rasa.') : 'Belum ada toko yang cocok.' %></p>
+  </header>
+
+  <ul class="sr-cats" aria-label="Kategori">
+    <li><a href="<%= qs({ kategori: '', page: '' }) %>" <%- !filters.kategori ? 'aria-current="true"' : '' %>>Semua</a></li>
+    <% categories.forEach(function (c) { %><li><a href="<%= qs({ kategori: c.slug, page: '' }) %>" <%- filters.kategori === c.slug ? 'aria-current="true"' : '' %>><%= c.name %></a></li><% }) %>
+  </ul>
+
+  <form class="sr-filters" method="get" action="/toko">
+    <input type="hidden" name="q" value="<%= filters.q %>">
+    <input type="hidden" name="kategori" value="<%= filters.kategori %>">
+    <input type="hidden" name="urut" value="<%= filters.urut %>">
+    <label>Lokasi
+      <select name="kota"><option value="">Semua lokasi</option>
+        <% cities.forEach(function (c) { %><option value="<%= c %>" <%= filters.kota === c ? 'selected' : '' %>><%= c %></option><% }) %></select>
+    </label>
+    <label>Harga menu termurah
+      <select name="harga"><option value="">Berapa saja</option>
+        <% [[10000, 'Sampai Rp 10.000'], [20000, 'Sampai Rp 20.000'], [35000, 'Sampai Rp 35.000'], [50000, 'Sampai Rp 50.000']].forEach(function (h) { %><option value="<%= h[0] %>" <%= Number(filters.harga) === h[0] ? 'selected' : '' %>><%= h[1] %></option><% }) %></select>
+    </label>
+    <label>Rating
+      <select name="rating"><option value="">Semua rating</option>
+        <% [4.5, 4, 3].forEach(function (r) { %><option value="<%= r %>" <%= Number(filters.rating) === r ? 'selected' : '' %>><%= r %> ke atas</option><% }) %></select>
+    </label>
+    <span class="acts"><button class="sr-btn" type="submit">Terapkan</button><% if (hasFilter) { %><a href="/toko">Atur ulang</a><% } %></span>
+  </form>
+
+  <p class="sr-sort">Urutkan:
+    <% [['populer', 'paling sering dipesan'], ['rating', 'rating tertinggi'], ['terbaru', 'terbaru']].forEach(function (u, i) { %><%- i ? ' · ' : '' %><a href="<%= qs({ urut: u[0], page: '' }) %>" <%- filters.urut === u[0] ? 'aria-current="true"' : '' %>><%= u[1] %></a><% }) %>
+  </p>
+
+  <% if (stores.length) { %>
+    <ul class="sr-rows"><% stores.forEach(function (s) { %><%- include('../partials/store-row', { s: s }) %><% }) %></ul>
+    <% if (pages > 1) { %>
+      <nav class="sr-pager" aria-label="Halaman">
+        <% if (page > 1) { %><a href="<%= qs({ page: page - 1 }) %>">Sebelumnya</a><% } else { %><span></span><% } %>
+        <span>Halaman <%= page %> dari <%= pages %></span>
+        <% if (page < pages) { %><a href="<%= qs({ page: page + 1 }) %>">Berikutnya</a><% } else { %><span></span><% } %>
+      </nav>
+    <% } %>
+  <% } else { %>
+    <div class="sr-empty">
+      <p><%= hasFilter ? 'Tidak ada toko yang cocok. Coba kata kunci lain, atau longgarkan filternya.' : 'Belum ada toko yang buka. Kalau kamu punya warung atau dapur rumahan, daftarkan di sini.' %></p>
+      <% if (hasFilter) { %><a class="sr-btn ghost" href="/toko">Lihat semua toko</a><% } else { %><a class="sr-btn" href="/daftar?sebagai=merchant">Daftar sebagai penjual</a><% } %>
+    </div>
+  <% } %>
+</div>

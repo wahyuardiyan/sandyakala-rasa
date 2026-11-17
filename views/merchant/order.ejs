@@ -1,0 +1,61 @@
+<%
+  const st = ORDER_STATUS[order.status]; const ps = PAYMENT_STATUS[order.pay_status];
+  const awaitingPay = order.status === 'pending_payment' && ['unpaid', 'claimed', 'rejected'].includes(order.pay_status);
+  const act = '/merchant/pesanan/' + order.code;
+%>
+<p class="sr-back"><a href="/merchant/pesanan">Kembali ke semua pesanan</a> <a href="/merchant/pesanan/<%= order.code %>/struk" target="_blank" rel="noopener">Cetak struk</a></p>
+<p class="meta-line"><%= fmtDateTime(order.created_at) %> · <%- include('../partials/state', { label: st.label, cls: st.cls }) %> · Pembayaran: <%= ps.label.toLowerCase() %></p>
+
+<div class="sr-split">
+  <section>
+    <h2 class="sr-subh first">Item pesanan</h2>
+    <dl class="sr-sum">
+      <% order.items.forEach(function (it) { %><div><dt><%= it.qty %> × <%= it.name %></dt><dd><%= rp(it.price * it.qty) %></dd></div><% }) %>
+      <div class="sep"><dt>Subtotal</dt><dd><%= rp(order.subtotal) %></dd></div>
+      <div><dt>Ongkos antar<%= order.delivery_zone ? ' (' + order.delivery_zone + ')' : '' %></dt><dd><%= rp(order.delivery_fee) %></dd></div>
+      <% if (order.discount > 0) { %><div><dt>Promo <%= order.voucher_code %></dt><dd>- <%= rp(order.discount) %></dd></div><% } %>
+      <div class="total"><dt>Total</dt><dd><%= rp(order.total) %></dd></div>
+    </dl>
+    <% if (order.status === 'delivering') { %>
+    <div class="sr-callbox">
+      <p><b><%= order.fulfillment === 'delivery' ? 'Sedang diantar. Sudah sampai?' : 'Siap diambil.' %></b> Hubungi pelanggan sekarang.</p>
+      <p class="addr"><%= order.address || '' %></p>
+      <div class="sr-actions"><a class="sr-btn" href="tel:<%= order.customer_phone %>">Telepon <%= order.customer_name.split(' ')[0] %></a><% const wa2 = waLink(order.customer_phone, 'Halo ' + order.customer_name + ', pesanan #' + order.code + ' dari ' + store.name + ' sudah sampai di depan.'); %><% if (wa2) { %><a class="sr-btn ghost" href="<%= wa2 %>" target="_blank" rel="noopener">Chat WhatsApp</a><% } %></div>
+    </div>
+    <% } %>
+    <h2 class="sr-subh"><%= order.fulfillment === 'delivery' ? 'Diantar ke' : 'Diambil sendiri oleh' %></h2>
+    <p class="sr-lines-txt"><b><%= order.customer_name %></b>, <a class="sr-textlink" href="tel:<%= order.customer_phone %>"><%= order.customer_phone %></a><% const wa = waLink(order.customer_phone, 'Halo ' + order.customer_name + ', saya dari ' + store.name + ' soal pesanan #' + order.code + '.'); %><% if (wa) { %> · <a class="sr-textlink" href="<%= wa %>" target="_blank" rel="noopener">Chat WhatsApp</a><% } %></p>
+    <% if (order.address) { %><p class="sr-lines-txt"><%= order.address %></p><% } %>
+    <% if (order.note) { %><p class="sr-notice">Catatan pelanggan: <%= order.note %></p><% } %>
+    <% if (order.status === 'cancelled') { %><p class="sr-notice bad">Dibatalkan: <%= order.cancelled_reason %></p><% } %>
+  </section>
+
+  <aside class="sr-side">
+    <h2>Tindakan</h2>
+    <% if (awaitingPay) { %>
+      <p class="sr-notice"><b>Periksa dulu di aplikasi pembayaranmu</b> (m-banking atau e-wallet): pastikan ada uang masuk sebesar <b><%= rp(order.total) %></b>. Jangan konfirmasi hanya dari tangkapan layar pelanggan.
+        <% if (order.pay_status === 'claimed') { %><br>Pelanggan menandai sudah membayar pada <%= fmtDateTime(order.claimed_at) %>.<% } %></p>
+      <% if (order.proof_image) { %><p class="sr-proof"><a href="<%= order.proof_image %>" target="_blank" rel="noopener"><img src="<%= order.proof_image %>" alt="Bukti pembayaran dari pelanggan"></a><span>Bukti dari pelanggan. Ketuk untuk memperbesar.</span></p><% } %>
+      <form method="post" action="<%= act %>/konfirmasi" data-confirm="Yakin uang <%= rp(order.total) %> sudah masuk ke rekening atau e-wallet-mu?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn lg full">Konfirmasi pembayaran diterima</button></form>
+      <% if (order.pay_status === 'claimed') { %>
+        <form method="post" action="<%= act %>/tolak" class="sr-form" style="margin-top:1.25rem"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="f"><label for="reason-t">Alasan menolak klaim</label><input id="reason-t" name="reason" maxlength="200" placeholder="Misalnya: uang belum masuk"></div>
+          <button class="sr-btn ghost full">Tolak klaim pembayaran</button></form>
+      <% } %>
+    <% } %>
+    <% if (order.status === 'processing') { %>
+      <form method="post" action="<%= act %>/kirim"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn lg full"><%= order.fulfillment === 'pickup' ? 'Tandai siap diambil' : 'Tandai sedang dikirim' %></button></form>
+    <% } %>
+    <% if (['processing', 'delivering'].includes(order.status)) { %>
+      <form method="post" action="<%= act %>/selesai" style="margin-top:.6rem"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn ghost full">Tandai selesai</button></form>
+    <% } %>
+    <% if (!['completed', 'cancelled'].includes(order.status)) { %>
+      <form method="post" action="<%= act %>/batal" class="sr-form sr-cancel" data-confirm="Batalkan pesanan ini?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="f"><label for="reason-b">Alasan pembatalan (wajib)</label><input id="reason-b" name="reason" maxlength="200" required></div>
+        <button class="sr-btn danger full">Batalkan pesanan</button>
+        <% if (order.pay_status === 'confirmed') { %><p class="hint">Pembayaran sudah dikonfirmasi: urus pengembalian dana langsung dengan pelanggan.</p><% } %>
+      </form>
+    <% } else { %><p class="hint">Tidak ada tindakan lagi untuk pesanan ini.</p><% } %>
+  </aside>
+</div>

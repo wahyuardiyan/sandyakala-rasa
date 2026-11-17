@@ -1,0 +1,62 @@
+<article class="sr-prose">
+  <header class="sr-pagehead"><h1>Kebijakan Privasi</h1><p>Terakhir diperbarui <%= updated %></p></header>
+  <p>Halaman ini menjelaskan data pribadi apa yang kami simpan, untuk apa, siapa yang bisa melihatnya, dan apa yang bisa kamu lakukan dengan data itu.</p>
+  <% if (operator.name) { %><p>Pengelola data: <b><%= operator.name %></b><%= operator.address ? ', ' + operator.address : '' %>.</p><% } %>
+
+  <h2>Data yang kami simpan</h2>
+  <ul>
+    <li><b>Akun:</b> nama, email atau nomor telepon, dan password. Password disimpan dalam bentuk acak satu arah (hash), jadi tidak bisa dibaca siapa pun, termasuk admin.</li>
+    <li><b>Pelanggan:</b> alamat bawaan (kalau kamu mengisinya), toko favorit, voucher yang kamu klaim, serta isi pesanan, nama penerima, nomor telepon, alamat antar, dan catatan setiap kali memesan.</li>
+    <li><b>Bukti pembayaran:</b> foto atau tangkapan layar yang kamu unggah saat menandai pesanan sudah dibayar. Ini bisa memuat nama dan nomor rekening atau e-wallet-mu, jadi tutup informasi yang tidak perlu sebelum mengunggah.</li>
+    <li><b>Penjual:</b> profil toko, alamat toko, nomor WhatsApp toko, foto, gambar QRIS, menu, voucher, dan zona antar.</li>
+    <li><b>Ulasan</b> dan balasan yang ditulis.</li>
+    <li><b>Notifikasi:</b> riwayat notifikasi di akunmu, dan bila kamu mengaktifkannya, kode langganan notifikasi browser dari perangkatmu.</li>
+    <li><b>Catatan teknis:</b> catatan error server (tanpa password) yang disimpan sementara untuk memperbaiki masalah.</li>
+  </ul>
+
+  <h2>Untuk apa data dipakai</h2>
+  <ul>
+    <li>Memproses pesanan dan pembayaran antara pelanggan dan penjual.</li>
+    <li>Mengirim notifikasi tentang pesananmu.</li>
+    <li>Menjaga keamanan akun dan mencegah penyalahgunaan, termasuk penyalahgunaan voucher.</li>
+    <li>Membantu menyelesaikan masalah, misalnya pesanan atau ulasan yang bermasalah.</li>
+    <li>Memberi penjual gambaran penjualan tokonya sendiri.</li>
+  </ul>
+  <p>Dasar kami memproses datamu adalah persetujuanmu saat mendaftar dan memakai layanan, serta keperluan untuk menjalankan pesanan yang kamu buat.</p>
+
+  <h2>Siapa yang bisa melihat</h2>
+  <ul>
+    <li><b>Penjual</b> melihat nama, nomor telepon, alamat antar, catatan, dan bukti pembayaran dari pelanggan yang memesan di tokonya, supaya pesanan bisa diproses dan pelanggan bisa dihubungi saat pesanan diantar.</li>
+    <li><b>Pengunjung</b> melihat informasi toko yang bersifat publik: nama, alamat, nomor WhatsApp toko, menu, voucher, serta ulasan beserta nama pemberi ulasan.</li>
+    <li><b>Admin</b> dapat melihat data akun dan pesanan untuk mengelola layanan dan membantu menyelesaikan masalah.</li>
+    <li>Kami tidak menjual datamu. Data baru dibuka kepada pihak lain bila hukum mewajibkannya.</li>
+  </ul>
+
+  <h2>Pihak ketiga yang ikut memproses</h2>
+  <ul>
+    <li><b>Layanan notifikasi browser</b> milik pembuat browsermu (misalnya Google, Mozilla, atau Apple) meneruskan notifikasi ke perangkatmu bila kamu mengaktifkannya.</li>
+    <li><b>Google Fonts</b> memuat jenis huruf, sehingga alamat IP-mu terlihat oleh Google saat halaman dibuka.</li>
+    <li>Bila diaktifkan oleh pengelola, <b>penyedia email atau gateway WhatsApp</b> dipakai untuk mengirim kabar pesanan ke penjual. Yang dikirim hanya isi kabar pesanan dan nomor tujuan.</li>
+    <li>Kami memakai satu cookie sesi supaya kamu tetap masuk dan formulir terlindungi. Tidak ada cookie iklan atau pelacak.</li>
+    <li>Foto yang kamu unggah diperkecil dan metadatanya, termasuk lokasi GPS dari kamera, dibuang.</li>
+  </ul>
+
+  <h2>Berapa lama data disimpan</h2>
+  <ul>
+    <li>Data akun disimpan selama akunmu ada.</li>
+    <li>Riwayat pesanan, bukti pembayaran, dan ulasan disimpan untuk catatan penjual dan penyelesaian masalah.</li>
+    <li>Catatan error disimpan sekitar 30 hari. Cadangan database disimpan beberapa salinan terakhir.</li>
+  </ul>
+
+  <h2>Hakmu</h2>
+  <p>Kamu berhak mengetahui, memperbaiki, meminta salinan, dan meminta penghapusan datamu, menarik persetujuan, serta mengajukan keberatan atas pemrosesan tertentu. Kamu bisa mengubah nama, telepon, dan alamat dari halaman Profil, dan mematikan notifikasi browser kapan saja. Untuk permintaan lain, hubungi kontak di bawah. Penghapusan dapat tertunda untuk pesanan yang sedang berjalan atau yang wajib kami catat menurut hukum.</p>
+
+  <h2>Keamanan dan kebocoran data</h2>
+  <p>Kami menjaga data dengan password yang di-hash, perlindungan formulir, pembatasan akses sesuai peran, dan cadangan berkala. Tidak ada sistem yang aman seratus persen, jadi gunakan password yang kuat dan jangan membagikannya. Kalau terjadi kebocoran data yang berisiko bagi kamu, kami akan memberi tahu pengguna yang terdampak secepatnya dan melapor sesuai ketentuan yang berlaku.</p>
+
+  <h2>Anak-anak</h2>
+  <p>Layanan ini ditujukan bagi pengguna dewasa. Anak di bawah umur sebaiknya memakainya dengan pendampingan orang tua atau wali.</p>
+
+  <h2>Perubahan dan kontak</h2>
+  <p>Kalau kebijakan ini berubah, tanggal pembaruan di atas ikut berubah. Pertanyaan atau permintaan soal datamu: lihat <a href="/bantuan">Bantuan</a><% if (contact.email || contact.wa) { %> atau hubungi <% if (contact.email) { %><a href="mailto:<%= contact.email %>"><%= contact.email %></a><% } %><% if (contact.email && contact.wa) { %>, <% } %><% if (contact.wa) { %><a href="<%= waLink(contact.wa, 'Halo admin Sandyakala Rasa, saya mau menanyakan soal data saya.') %>" target="_blank" rel="noopener">WhatsApp</a><% } %><% } %>.</p>
+</article>

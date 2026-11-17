@@ -1,0 +1,11 @@
+<form method="post" action="/admin/kategori" class="sr-form sr-narrow sr-addcat">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="f" style="flex:1"><label for="name">Nama kategori baru</label><input id="name" name="name" required minlength="2" maxlength="60"></div>
+  <button class="sr-btn">Tambah</button>
+</form>
+<div class="sr-tablewrap sr-narrow"><table class="sr-table"><thead><tr><th>Kategori</th><th>Toko</th><th>Menu</th><th></th></tr></thead><tbody>
+  <% cats.forEach(function (c) { %>
+    <tr><td><b><%= c.name %></b></td><td><%= c.store_count %></td><td><%= c.product_count %></td>
+      <td><form method="post" action="/admin/kategori/<%= c.id %>/hapus" data-confirm="Hapus kategori ini?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn bad">Hapus</button></form></td></tr>
+  <% }) %>
+</tbody></table></div>

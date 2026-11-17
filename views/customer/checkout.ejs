@@ -1,0 +1,49 @@
+<% const ready = store && store.is_accepting && store.status === 'approved' && store.qris_status === 'approved'; %>
+<header class="sr-pagehead">
+  <h1>Checkout</h1>
+  <p>Isi data penerima. Setelah itu kamu akan melihat kode QRIS milik <%= store.name %> untuk membayar.</p>
+</header>
+<% if (errors.length) { %><div class="sr-notice bad" role="alert"><% errors.forEach(function (e) { %><p><%= e %></p><% }) %></div><% } %>
+<% if (!ready) { %><p class="sr-notice">Toko ini sedang tidak bisa menerima pesanan. Coba lagi nanti.</p><% } %>
+<form method="post" action="/checkout" class="sr-split" data-quote-url="/checkout/hitung.json">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <section class="sr-form">
+    <fieldset class="sr-choices">
+      <legend>Pesanan diterima lewat</legend>
+      <label><input type="radio" name="fulfillment" value="delivery" <%= form.fulfillment !== 'pickup' ? 'checked' : '' %>><span><b>Diantar</b><small><%= zones.length ? 'Ongkos antar sesuai zona' : 'Ongkos antar ' + (store.delivery_fee ? rp(store.delivery_fee) : 'gratis') %></small></span></label>
+      <label><input type="radio" name="fulfillment" value="pickup" <%= form.fulfillment === 'pickup' ? 'checked' : '' %>><span><b>Ambil sendiri</b><small>Tanpa ongkos antar</small></span></label>
+    </fieldset>
+    <% if (zones.length) { %>
+    <div class="f" id="zone-box"><label for="zona">Zona antar</label>
+      <select id="zona" name="zona" class="sr-select"><option value="">Pilih zona</option>
+        <% zones.forEach(function (z) { %><option value="<%= z.id %>" <%= String(form.zona) === String(z.id) ? 'selected' : '' %>><%= z.name %> (<%= z.fee ? rp(z.fee) : 'gratis' %>)</option><% }) %></select></div>
+    <% } %>
+    <div class="f"><label for="name">Nama penerima</label><input id="name" name="name" required maxlength="100" value="<%= form.name %>" autocomplete="name"></div>
+    <div class="f"><label for="phone">Nomor telepon atau WhatsApp</label><input id="phone" name="phone" required maxlength="20" value="<%= form.phone %>" placeholder="0812 3456 7890" autocomplete="tel"></div>
+    <div class="f" id="address-box"><label for="address">Alamat pengiriman</label><textarea id="address" name="address" rows="3" maxlength="500" placeholder="Nama jalan, nomor rumah, RT/RW, patokan"><%= form.address %></textarea></div>
+    <fieldset class="sr-choices" id="voucher-box">
+      <legend>Voucher</legend>
+      <label><input type="radio" name="voucher" value="" <%= !form.voucher ? 'checked' : '' %>><span><b>Tanpa voucher</b></span></label>
+      <% claimed.forEach(function (v) { %>
+        <label class="<%= v.error ? 'is-off' : '' %>"><input type="radio" name="voucher" value="<%= v.code %>" <%= v.error ? 'disabled' : '' %> <%= form.voucher === v.code ? 'checked' : '' %>>
+          <span><b><%= v.code %></b><small><%= voucherText(v) %><%= v.error ? ' · ' + v.error : ' · hemat ' + rp(v.saving) %></small></span></label>
+      <% }) %>
+      <% if (!claimed.length) { %><p class="hint" style="margin:.4rem 0 0">Belum ada voucher untuk toko ini. Klaim di <a class="sr-textlink" href="/toko/<%= store.slug %>">halaman toko</a> atau <a class="sr-textlink" href="/voucher">masukkan kode</a>.</p><% } %>
+      <p class="hint" id="voucher-msg" style="margin:.3rem 0 0" aria-live="polite"></p>
+    </fieldset>
+    <div class="f"><label for="note">Catatan untuk penjual (boleh kosong)</label><textarea id="note" name="note" rows="2" maxlength="300" placeholder="Contoh: tanpa sambal, lebih pedas"><%= form.note %></textarea></div>
+  </section>
+  <aside class="sr-side">
+    <h2>Ringkasan pesanan</h2>
+    <p class="hint" style="margin-top:0"><%= store.name %></p>
+    <dl class="sr-sum">
+      <% items.forEach(function (it) { %><div><dt><%= it.qty %> × <%= it.name %></dt><dd><%= rp(it.price * it.qty) %></dd></div><% }) %>
+      <div class="sep"><dt>Subtotal</dt><dd><%= rp(subtotal) %></dd></div>
+      <div id="fee-row"><dt>Ongkos antar</dt><dd id="fee-amount"><%= q && q.zones.length && !q.zone ? 'pilih zona' : rp(q ? q.fee : 0) %></dd></div>
+      <div id="discount-row" class="<%= q && q.discount ? '' : 'hidden' %>"><dt>Potongan promo</dt><dd id="discount-amount">- <%= rp(q ? q.discount : 0) %></dd></div>
+      <div class="total"><dt>Total bayar</dt><dd id="total-amount"><%= rp(q ? q.total : subtotal) %></dd></div>
+    </dl>
+    <button class="sr-btn lg full" <%= ready ? '' : 'disabled' %>>Lanjut ke pembayaran</button>
+    <p class="hint">Kamu membayar langsung ke penjual lewat QRIS. Pesanan diproses setelah penjual memastikan uangnya masuk.</p>
+  </aside>
+</form>

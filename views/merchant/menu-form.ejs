@@ -1,0 +1,19 @@
+<% const isEdit = !!product.id; %>
+<p class="sr-back"><a href="/merchant/menu">Kembali ke menu</a></p>
+<% if (errors.length) { %><div class="sr-notice bad" role="alert"><% errors.forEach(function (e) { %><p><%= e %></p><% }) %></div><% } %>
+<form method="post" action="<%= isEdit ? '/merchant/menu/' + product.id + '/ubah' : '/merchant/menu/baru' %>" enctype="multipart/form-data" class="sr-form sr-narrow">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="f"><label for="name">Nama menu</label><input id="name" name="name" required maxlength="120" value="<%= product.name || '' %>" placeholder="Contoh: Nasi Ayam Geprek"></div>
+  <div class="sr-cols2">
+    <div class="f"><label for="price">Harga (Rp)</label><input id="price" name="price" data-rupiah inputmode="numeric" required value="<%= product.price || '' %>" placeholder="15.000"></div>
+    <div class="f"><label for="stock">Stok (boleh kosong)</label><input id="stock" name="stock" inputmode="numeric" maxlength="6" value="<%= product.stock === null || product.stock === undefined ? '' : product.stock %>" placeholder="Kosong = tidak dibatasi"></div>
+  </div>
+  <div class="f"><label for="category_id">Kategori</label>
+    <select id="category_id" name="category_id"><option value="">Tanpa kategori</option>
+      <% categories.forEach(function (c) { %><option value="<%= c.id %>" <%= Number(product.category_id) === c.id ? 'selected' : '' %>><%= c.name %></option><% }) %></select></div>
+  <div class="f"><label for="description">Deskripsi</label><textarea id="description" name="description" rows="3" maxlength="500" placeholder="Ceritakan rasa, porsi, atau bahan utamanya"><%= product.description || '' %></textarea></div>
+  <%- include('../partials/uploader', { id: 'image', name: 'image', label: 'Foto menu', shape: 'menu', current: product.image, hint: 'Foto HD boleh sampai 10 MB. Otomatis dipotong 4:3 dan dioptimalkan, jadi tidak pecah. Foto dari atas piring dengan cahaya terang paling menarik.' }) %>
+  <% if (product.image) { %><label class="sr-check"><input type="checkbox" name="remove_image" value="1"> Hapus foto saat ini</label><% } %>
+  <label class="sr-check"><input type="checkbox" name="is_available" value="1" <%= product.is_available ? 'checked' : '' %>> Tersedia untuk dipesan</label>
+  <div class="sr-actions"><button class="sr-btn lg">Simpan</button><a href="/merchant/menu" class="sr-textlink">Batal</a></div>
+</form>

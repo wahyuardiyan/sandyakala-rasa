@@ -1,0 +1,41 @@
+<section class="sr-block first">
+  <p class="sr-lead">Dapat kabar pesanan walau dashboard sedang tidak dibuka. Kabar dikirim saat ada pembayaran yang perlu kamu cek, saat pelanggan membatalkan atau menerima pesanan, dan saat ada ulasan baru. Semuanya juga tersimpan di lonceng di pojok atas.</p>
+</section>
+
+<section class="sr-block">
+  <h2>Notifikasi di HP atau komputer ini <span class="sr-tag">Gratis</span></h2>
+  <% if (!pushOn) { %>
+    <p class="sr-empty-line">Belum diaktifkan di situs ini. Admin perlu menjalankan <code>npm run vapid</code> dan mengisi kunci di <code>.env</code>.</p>
+  <% } else { %>
+    <p class="hint">Kabar pesanan muncul seperti notifikasi aplikasi biasa, bahkan saat tab ini tertutup. Aktifkan di setiap perangkat yang kamu pakai untuk berjualan.</p>
+    <p data-push-state class="sr-pushstate" aria-live="polite">Memeriksa perangkat ini…</p>
+    <div class="sr-actions">
+      <button type="button" class="sr-btn" data-push-on data-key="<%= vapidKey %>" data-csrf="<%= csrfToken %>">Aktifkan notifikasi</button>
+      <button type="button" class="sr-linkbtn bad hidden" data-push-off data-csrf="<%= csrfToken %>">Matikan di perangkat ini</button>
+    </div>
+    <p class="hint">Di iPhone: buka situs ini di Safari, pilih Bagikan, lalu "Tambah ke Layar Utama", buka dari ikon itu, baru aktifkan. Di Android cukup pakai Chrome.</p>
+  <% } %>
+</section>
+
+<section class="sr-block">
+  <form method="post" action="/merchant/notifikasi/simpan" class="sr-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <h2>WhatsApp</h2>
+    <% if (!waOn) { %>
+      <p class="sr-empty-line">Pemberitahuan WhatsApp belum diaktifkan di situs ini. Hubungi admin.</p>
+    <% } else { %>
+      <label class="sr-check"><input type="checkbox" name="notify_wa" value="1" <%= st.notify_wa ? 'checked' : '' %>> Kirim kabar pesanan ke WhatsApp <%= st.whatsapp || '(nomor belum diisi)' %></label>
+      <p class="hint">Memakai nomor WhatsApp toko dari <a class="sr-textlink" href="/merchant/toko">Pengaturan toko</a>. Pesan datang dari nomor Sandyakala Rasa, jadi simpan nomornya agar tidak tersaring.</p>
+    <% } %>
+    <h2 class="sr-subh">Email</h2>
+    <% if (!mailOn) { %>
+      <p class="sr-empty-line">Email belum diaktifkan di situs ini.</p>
+    <% } else { %>
+      <label class="sr-check"><input type="checkbox" name="notify_email" value="1" <%= st.notify_email ? 'checked' : '' %>> Kirim kabar pesanan ke <%= email || 'emailmu (belum diisi)' %></label>
+    <% } %>
+    <% if (waOn || mailOn) { %><div class="sr-actions" style="margin-top:1rem"><button class="sr-btn">Simpan</button></div><% } %>
+  </form>
+  <% if (waOn || mailOn || pushOn) { %>
+  <form method="post" action="/merchant/notifikasi/tes" style="margin-top:1rem"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn ghost sm">Kirim pesan tes</button></form>
+  <% } %>
+</section>

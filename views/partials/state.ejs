@@ -1,0 +1,3 @@
+<%# Status sebagai teks dengan titik warna. Parameter: label, cls (kelas lama bg-xxx dipakai hanya untuk menentukan nada). %>
+<% const c = String(locals.cls || ''); const tone = /amber/.test(c) ? 'warn' : /sky|indigo/.test(c) ? 'info' : /emerald/.test(c) ? 'ok' : /red/.test(c) ? 'bad' : 'off'; %>
+<span class="sr-st <%= tone %>"><%= label %></span>

@@ -1,0 +1,30 @@
+<div class="sr-toolbar">
+  <form method="get" class="sr-searchline"><input name="q" value="<%= q %>" placeholder="Cari kode, pelanggan, telepon, atau toko" maxlength="80" aria-label="Cari pesanan"><% if (status) { %><input type="hidden" name="status" value="<%= status %>"><% } %><button class="sr-btn sm">Cari</button></form>
+</div>
+<div class="sr-chips">
+  <% [['', 'Semua'], ['claimed', 'Perlu dicek penjual'], ['pending_payment', 'Menunggu bayar'], ['processing', 'Diproses'], ['delivering', 'Diantar'], ['completed', 'Selesai'], ['cancelled', 'Dibatalkan']].forEach(function (t) { %>
+    <a href="/admin/pesanan<%= t[0] ? '?status=' + t[0] : '' %>" <%- status === t[0] ? 'class="is-active" aria-current="true"' : '' %>><%= t[1] %></a>
+  <% }) %>
+</div>
+<p class="hint"><%= total %> pesanan ditemukan.</p>
+<% if (!orders.length) { %><div class="sr-empty"><p>Tidak ada pesanan di bagian ini.</p></div><% } else { %>
+<div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Kode</th><th>Toko</th><th>Pelanggan</th><th>Total</th><th>Status</th><th>Dibuat</th><th></th></tr></thead><tbody>
+  <% orders.forEach(function (o) { const st = ORDER_STATUS[o.status]; %>
+    <tr>
+      <td><b>#<%= o.code %></b></td>
+      <td><%= o.store_name %></td>
+      <td><%= o.customer_name %><small><%= o.customer_phone %></small></td>
+      <td><%= rp(o.total) %></td>
+      <td><%- include('../partials/state', { label: st.label, cls: st.cls }) %></td>
+      <td><%= fmtDateTime(o.created_at) %></td>
+      <td><a href="/admin/pesanan/<%= o.code %>" class="sr-btn sm">Buka</a></td>
+    </tr>
+  <% }) %>
+</tbody></table></div>
+<% const qs = function (n) { return '?' + (status ? 'status=' + status + '&' : '') + (q ? 'q=' + encodeURIComponent(q) + '&' : '') + 'hal=' + n; }; %>
+<div class="sr-pager">
+  <span><% if (page > 1) { %><a href="/admin/pesanan<%= qs(page - 1) %>">Sebelumnya</a><% } %></span>
+  <span>Halaman <%= page %> dari <%= pages %></span>
+  <span><% if (page < pages) { %><a href="/admin/pesanan<%= qs(page + 1) %>">Berikutnya</a><% } %></span>
+</div>
+<% } %>

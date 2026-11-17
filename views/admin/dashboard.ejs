@@ -1,0 +1,19 @@
+<%- include('../partials/warung', { greet: greet, line: (stats.pending + stats.qrisPending > 0) ? 'Ada toko atau QRIS yang menunggu pemeriksaanmu.' : 'Tidak ada yang menunggu. Platform berjalan tenang.' }) %>
+<% if (stats.pending + stats.qrisPending > 0) { %>
+  <p class="sr-notice"><b><%= stats.pending %></b> toko menunggu verifikasi dan <b><%= stats.qrisPending %></b> QRIS menunggu diperiksa. <a class="sr-textlink" href="/admin/toko?status=<%= stats.pending ? 'pending' : 'qris' %>">Periksa sekarang</a></p>
+<% } %>
+<dl class="sr-figs">
+  <div><dt>Merchant</dt><dd><%= stats.stores %></dd><small><%= stats.approved %> aktif</small></div>
+  <div><dt>Pelanggan</dt><dd><%= stats.users %></dd></div>
+  <div><dt>Pesanan</dt><dd><%= stats.orders %></dd></div>
+  <div><dt>Nilai transaksi terkonfirmasi</dt><dd><%= rp(stats.gmv) %></dd><small>Uang langsung ke merchant, bukan ke platform.</small></div>
+</dl>
+<div class="sr-cols2 sr-block first">
+  <section><h2>Pesanan 6 bulan terakhir</h2><div class="sr-chart"><%- chart %></div></section>
+  <section><h2>Merchant terbaru</h2>
+    <% if (!newest.length) { %><p class="sr-empty-line">Belum ada merchant.</p><% } else { %>
+    <div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Toko</th><th>Pemilik</th><th>Status</th></tr></thead><tbody>
+      <% newest.forEach(function (s) { %><tr><td><a class="sr-textlink" href="/admin/toko/<%= s.id %>"><%= s.name %></a></td><td><%= s.owner_name %></td><td><%- include('../partials/state', { label: STORE_STATUS[s.status].label, cls: STORE_STATUS[s.status].cls }) %></td></tr><% }) %>
+    </tbody></table></div>
+    <% } %></section>
+</div>

@@ -1,0 +1,70 @@
+<article class="sr-prose">
+  <header class="sr-pagehead"><h1>Syarat dan Ketentuan</h1><p>Terakhir diperbarui <%= updated %></p></header>
+  <p>Dengan membuat akun atau memakai Sandyakala Rasa, kamu setuju dengan aturan di bawah ini. Bahasanya kami buat sesederhana mungkin supaya mudah dipahami pelanggan maupun penjual.</p>
+
+  <h2>1. Tentang Sandyakala Rasa</h2>
+  <p>Sandyakala Rasa adalah tempat bertemunya pelanggan dengan penjual makanan dan minuman skala UMKM. Kami menyediakan halaman toko, keranjang, voucher, pencatatan pesanan, dan notifikasi. Kami <b>bukan penjual makanan</b>, bukan penyedia layanan pembayaran, dan bukan penyedia jasa antar. Jual beli terjadi antara pelanggan dan penjual.</p>
+  <% if (operator.name) { %><p>Layanan ini dikelola oleh <b><%= operator.name %></b><%= operator.address ? ', ' + operator.address : '' %>.</p><% } %>
+
+  <h2>2. Akun</h2>
+  <ul>
+    <li>Isi data dengan benar dan jaga kerahasiaan passwordmu.</li>
+    <li>Kamu bertanggung jawab atas semua yang terjadi lewat akunmu.</li>
+    <li>Satu orang sebaiknya satu akun. Kami dapat menonaktifkan akun yang melanggar aturan ini atau dipakai untuk menipu.</li>
+  </ul>
+
+  <h2>3. Memesan dan membayar (untuk pelanggan)</h2>
+  <ul>
+    <li>Harga, menu, ongkos antar, dan zona antar ditentukan penjual. Toko hanya menerima pesanan di dalam jam bukanya.</li>
+    <li>Pembayaran memakai <b>QRIS milik penjual</b>. Uangmu langsung masuk ke penjual. Sandyakala Rasa tidak menerima dan tidak menahan uang pembayaran.</li>
+    <li>Setelah membayar, unggah <b>bukti pembayaran</b> lalu tekan "Saya sudah membayar". Itu hanya memberi tahu penjual. Pesanan diproses setelah penjual memastikan uang masuk.</li>
+    <li>Bayar sesuai nominal total pesanan, sebelum batas waktu yang tertera (15 menit). Pesanan yang lewat batas waktu dibatalkan otomatis.</li>
+    <li>Voucher dibuat dan ditanggung oleh penjual. Voucher harus diklaim dulu, memiliki syarat (misalnya belanja minimal dan masa berlaku), dan dapat dipakai satu kali per pelanggan. Potongan hanya berlaku untuk harga menu, tidak untuk ongkos antar.</li>
+    <li>Nomor teleponmu akan dilihat penjual agar mereka bisa menghubungimu saat pesanan diantar. Pastikan nomornya aktif.</li>
+  </ul>
+
+  <h2>4. Pembatalan dan pengembalian dana</h2>
+  <ul>
+    <li>Selama belum dibayar, pelanggan dapat membatalkan pesanan sendiri.</li>
+    <li>Kalau pembayaran sudah dikonfirmasi lalu pesanan dibatalkan (oleh penjual atau admin), pengembalian dana diurus langsung antara pelanggan dan penjual karena uangnya ada pada penjual. Kami dapat membantu menghubungkan, tetapi tidak menjamin pengembalian dana.</li>
+  </ul>
+
+  <h2>5. Kewajiban penjual</h2>
+  <ul>
+    <li>Informasi toko, menu, harga, jam buka, dan stok harus benar dan diperbarui.</li>
+    <li>QRIS yang diunggah harus <b>milik sendiri</b>. Setiap QRIS diperiksa admin sebelum dipakai.</li>
+    <li>Konfirmasi pembayaran hanya setelah uang benar-benar masuk ke rekening atau e-wallet kamu. Jangan mengandalkan tangkapan layar pelanggan.</li>
+    <li>Kualitas, kebersihan, dan keamanan makanan adalah tanggung jawab penjual. Begitu juga klaim seperti "halal", serta izin usaha, izin edar, dan perpajakan yang berlaku untuk usahamu.</li>
+    <li>Cantumkan nomor WhatsApp yang aktif, tanggapi pesanan dengan wajar, dan hubungi pelanggan saat pesanan diantar.</li>
+    <li>Kamu bertanggung jawab atas voucher yang kamu buat dan wajib menghormatinya selama masih berlaku.</li>
+  </ul>
+
+  <h2>6. Biaya layanan untuk penjual</h2>
+  <p>Saat ini memakai Sandyakala Rasa gratis bagi penjual. Kami dapat mengenakan komisi atau biaya layanan atas pesanan yang selesai. Kalau itu diberlakukan, besarnya dan cara penagihannya diberitahukan lebih dulu kepada penjual, dan hanya berlaku untuk pesanan setelah tanggal berlaku. Komisi ditagih kepada penjual dan tidak menambah harga yang dibayar pelanggan.</p>
+
+  <h2>7. Yang tidak boleh dilakukan</h2>
+  <ul>
+    <li>Menipu, memakai QRIS atau identitas orang lain, atau menjual barang yang dilarang hukum.</li>
+    <li>Menulis ulasan palsu atau memerintahkan orang lain menulisnya, serta konten yang melanggar hukum, bernuansa SARA, atau melecehkan.</li>
+    <li>Menyalahgunakan voucher, misalnya membuat banyak akun untuk satu voucher.</li>
+    <li>Mengganggu atau mencoba membobol sistem.</li>
+  </ul>
+
+  <h2>8. Ulasan</h2>
+  <p>Ulasan hanya bisa ditulis pelanggan setelah pesanannya selesai. Tulis berdasarkan pengalaman nyata. Penjual boleh membalas ulasan dan melaporkan ulasan yang melanggar aturan, tetapi hanya admin yang dapat menyembunyikannya. Ulasan yang disembunyikan tidak tampil di halaman toko dan tidak dihitung dalam rating.</p>
+
+  <h2>9. Penangguhan</h2>
+  <p>Toko atau akun yang melanggar aturan ini dapat kami tangguhkan atau tutup. Kalau ada pesanan berjalan, kami akan berusaha agar pelanggan tidak dirugikan.</p>
+
+  <h2>10. Batas tanggung jawab</h2>
+  <p>Layanan ini diberikan apa adanya. Kami tidak bertanggung jawab atas mutu makanan, keterlambatan, atau perselisihan antara pelanggan dan penjual, sejauh diizinkan hukum yang berlaku. Kami akan berusaha membantu menyelesaikan masalah dengan baik.</p>
+
+  <h2>11. Pengaduan dan sengketa</h2>
+  <p>Kalau ada masalah dengan pesanan, hubungi penjual lebih dulu lewat nomor yang tertera. Kalau belum selesai, hubungi kami lewat kontak di bawah dan sertakan kode pesanan. Perselisihan diselesaikan secara musyawarah. Hukum yang berlaku adalah hukum Republik Indonesia.</p>
+
+  <h2>12. Perubahan aturan</h2>
+  <p>Aturan ini dapat berubah. Tanggal pembaruan tertera di bagian atas halaman. Kalau kamu terus memakai layanan setelah perubahan, kamu dianggap menyetujuinya.</p>
+
+  <h2>13. Pertanyaan</h2>
+  <p>Lihat halaman <a href="/bantuan">Bantuan</a><% if (contact.email || contact.wa) { %> atau hubungi kami: <% if (contact.email) { %><a href="mailto:<%= contact.email %>"><%= contact.email %></a><% } %><% if (contact.email && contact.wa) { %>, <% } %><% if (contact.wa) { %><a href="<%= waLink(contact.wa, 'Halo admin Sandyakala Rasa, saya mau tanya soal syarat dan ketentuan.') %>" target="_blank" rel="noopener">WhatsApp</a><% } %><% } %>.</p>
+</article>

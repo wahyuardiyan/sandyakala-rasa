@@ -1,0 +1,60 @@
+<section class="sr-block first">
+  <h2>Ringkasan</h2>
+  <dl class="sr-figs">
+    <div><dt>Belum dibayar</dt><dd><%= rp(totals.unpaid) %></dd></div>
+    <div><dt>Menunggu dicek</dt><dd><%= rp(totals.submitted) %></dd></div>
+    <div><dt>Sudah lunas</dt><dd><%= rp(totals.paid) %></dd></div>
+  </dl>
+  <% if (!cfg.enabled) { %><p class="sr-note">Penagihan belum aktif. Isi persen komisi dan tanggal mulai di bawah. Selama belum aktif, semua penjual gratis.</p><% } %>
+</section>
+
+<section class="sr-block">
+  <h2>Pengaturan komisi</h2>
+  <form method="post" action="/admin/tagihan/pengaturan" enctype="multipart/form-data" class="sr-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="f"><label for="pct">Komisi (persen)</label><input id="pct" name="pct" inputmode="decimal" value="<%= cfg.pct %>" placeholder="2"><p class="hint" style="margin:.3rem 0 0">Dihitung dari harga menu setelah diskon voucher (ongkos antar tidak ikut). Isi 0 untuk menonaktifkan.</p></div>
+    <div class="f"><label for="start">Berlaku untuk pesanan selesai mulai tanggal</label><input id="start" name="start" type="date" value="<%= cfg.start %>"><p class="hint" style="margin:.3rem 0 0">Pesanan sebelum tanggal ini tidak ditagih. Tagihan dibuat otomatis tiap awal bulan untuk bulan yang sudah berakhir.</p></div>
+    <div class="f"><label for="due_days">Jatuh tempo (hari setelah tagihan dibuat)</label><input id="due_days" name="due_days" type="number" min="1" max="60" value="<%= cfg.dueDays %>"></div>
+    <div class="f"><label for="bank">Rekening atau e-wallet tujuan</label><textarea id="bank" name="bank" rows="3" maxlength="300" placeholder="BCA 1234567890 a.n. Nama Pemilik"><%= cfg.bank %></textarea></div>
+    <div class="f"><label for="qris">QRIS platform (opsional)</label><input id="qris" name="qris" type="file" accept="image/jpeg,image/png,image/webp">
+      <% if (cfg.qris) { %><img src="<%= cfg.qris %>" alt="QRIS platform" class="sr-qrthumb"><label class="sr-check"><input type="checkbox" name="remove_qris" value="1"> Hapus QRIS ini</label><% } %></div>
+    <button class="sr-btn">Simpan pengaturan</button>
+  </form>
+  <p class="hint">Tahap awal sebaiknya komisi gratis untuk penjual pertama: biarkan komisi 0, atau pakai tombol "Gratis" di halaman tiap toko.</p>
+</section>
+
+<section class="sr-block">
+  <div class="head"><h2>Tagihan</h2>
+    <form method="post" action="/admin/tagihan/buat"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn sm ghost">Buat tagihan sekarang</button></form></div>
+  <div class="sr-chips">
+    <% [['', 'Semua'], ['unpaid', 'Belum dibayar'], ['overdue', 'Lewat jatuh tempo'], ['submitted', 'Perlu dicek'], ['paid', 'Lunas'], ['waived', 'Dibebaskan']].forEach(function (t) { %>
+      <a href="/admin/tagihan<%= t[0] ? '?status=' + t[0] : '' %>" <%- status === t[0] ? 'class="is-active" aria-current="true"' : '' %>><%= t[1] %></a>
+    <% }) %>
+  </div>
+  <% if (!invoices.length) { %><div class="sr-empty"><p>Belum ada tagihan di bagian ini.</p></div><% } else { %>
+  <div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Toko</th><th>Bulan</th><th>Pesanan</th><th>Komisi</th><th>Status</th><th>Jatuh tempo</th><th></th></tr></thead><tbody>
+    <% invoices.forEach(function (i) { const st = INVOICE_STATUS[i.status]; const late = i.status === 'unpaid' && i.due_at && new Date(i.due_at) < now; %>
+      <tr>
+        <td><a class="sr-textlink" href="/admin/toko/<%= i.store_id %>"><%= i.store_name %></a><% if (i.store_status === 'suspended') { %><small>Ditangguhkan</small><% } %></td>
+        <td><%= monthLabel(i.period) %></td>
+        <td><%= i.order_count %><small>dasar <%= rp(i.base_total) %> × <%= i.pct %>%</small></td>
+        <td><b><%= rp(i.amount) %></b></td>
+        <td><%- include('../partials/state', { label: late ? 'Lewat jatuh tempo' : st.label, cls: late ? 'bg-red-100' : st.cls }) %><% if (i.note) { %><small><%= i.note %></small><% } %></td>
+        <td><%= i.due_at ? fmtDate(i.due_at) : '-' %></td>
+        <td><div class="sr-rowacts">
+          <% if (i.proof_image) { %><a class="sr-textlink" href="<%= i.proof_image %>" target="_blank" rel="noopener">Lihat bukti</a><% } %>
+          <% if (i.status === 'unpaid' || i.status === 'submitted') { %>
+          <form method="post" action="/admin/tagihan/<%= i.id %>/lunas" class="sr-inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="back" value="<%= status %>"><button class="sr-linkbtn">Tandai lunas</button></form>
+          <% if (i.status === 'submitted') { %>
+          <form method="post" action="/admin/tagihan/<%= i.id %>/tolak" class="sr-inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="back" value="<%= status %>"><input name="reason" maxlength="200" placeholder="Alasan tolak" aria-label="Alasan menolak bukti"><button class="sr-linkbtn bad">Tolak bukti</button></form>
+          <% } %>
+          <form method="post" action="/admin/tagihan/<%= i.id %>/ingatkan" class="sr-inline"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="back" value="<%= status %>"><button class="sr-linkbtn">Ingatkan</button></form>
+          <form method="post" action="/admin/tagihan/<%= i.id %>/bebaskan" class="sr-inline" data-confirm="Bebaskan tagihan ini?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="back" value="<%= status %>"><button class="sr-linkbtn bad">Bebaskan</button></form>
+          <% } %>
+          <% if (late && i.store_status === 'approved') { %><a class="sr-textlink bad" href="/admin/toko/<%= i.store_id %>">Tangguhkan toko</a><% } %>
+        </div></td>
+      </tr>
+    <% }) %>
+  </tbody></table></div>
+  <% } %>
+</section>

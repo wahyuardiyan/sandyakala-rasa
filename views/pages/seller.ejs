@@ -1,0 +1,79 @@
+<%
+  const ic = {
+    user: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M19 8v6M16 11h6"/>',
+    store: '<path d="M3 9l1.5-5h15L21 9M3 9v11h18V9M3 9c0 2 1.5 3 3 3s3-1 3-3c0 2 1.5 3 3 3s3-1 3-3c0 2 1.5 3 3 3s3-1 3-3M9 20v-6h6v6"/>',
+    qr: '<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 14v1M14 20h2M19 18v3"/>',
+    food: '<path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v6M9 3v6M17 21V3c-2.2 1.6-3 4-3 7v3h3"/>',
+    ok: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/>',
+    cash: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/>',
+    shield: '<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+    bell: '<path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21a2 2 0 0 0 4 0"/>',
+    page: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 14h5"/>'
+  };
+  const svg = (k) => '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic[k] + '</svg>';
+%>
+<article class="sr-sell">
+  <header class="sr-sell-hero">
+    <h1>Jualan masakanmu.<br>Uangnya langsung ke QRIS-mu.</h1>
+    <p>Sandyakala Rasa membantu usaha kuliner rumahan punya toko sendiri di internet. Pelanggan memesan dan membayar langsung ke QRIS milikmu, kami tidak pernah memegang uangnya.</p>
+    <div class="sr-actions">
+      <a class="sr-btn lg" href="/daftar?sebagai=merchant">Daftar jadi penjual</a>
+      <a class="sr-textlink" href="#panduan">Lihat cara mulainya</a>
+    </div>
+  </header>
+
+  <section class="sr-sell-grid" aria-label="Keuntungan">
+    <div><span class="ico"><%- svg('cash') %></span><h3>Uang langsung ke kamu</h3><p>Pembayaran masuk ke QRIS-mu sendiri. Tidak ada dompet platform, tidak ada uang tertahan.</p></div>
+    <div><span class="ico"><%- svg('shield') %></span><h3>Tanpa COD</h3><p>Pesanan baru diproses setelah pembayaran kamu cek. Tidak ada pesanan iseng yang tidak dibayar.</p></div>
+    <div><span class="ico"><%- svg('bell') %></span><h3>Kabar pesanan masuk</h3><p>Notifikasi di HP, bahkan saat dashboard tidak dibuka. Gratis.</p></div>
+    <div><span class="ico"><%- svg('page') %></span><h3>Halaman toko sendiri</h3><p>Banner, menu berfoto, jam buka, promo, dan ulasan pelanggan di satu halaman yang bisa kamu bagikan.</p></div>
+  </section>
+
+  <section id="panduan" class="sr-sell-steps">
+    <h2>Mulai dalam 5 langkah</h2>
+    <ol>
+      <li><span class="ico"><%- svg('user') %></span><div><h3>1. Daftar</h3><p>Pilih "penjual" saat mendaftar. Cukup nama, email atau nomor HP, dan password.</p></div></li>
+      <li><span class="ico"><%- svg('store') %></span><div><h3>2. Lengkapi toko</h3><p>Isi nama toko, kategori, alamat, nomor WhatsApp, jam buka, dan ongkos antar. Pasang banner dan logo supaya toko terlihat meyakinkan.</p></div></li>
+      <li><span class="ico"><%- svg('qr') %></span><div><h3>3. Unggah QRIS</h3><p>Pakai QRIS resmi milikmu sendiri. Admin memeriksanya sekali supaya pelanggan aman dari penipuan.</p></div></li>
+      <li><span class="ico"><%- svg('food') %></span><div><h3>4. Tambah menu</h3><p>Nama, harga, dan satu foto per menu. Stok boleh dikosongkan kalau tidak ingin dibatasi.</p></div></li>
+      <li><span class="ico"><%- svg('ok') %></span><div><h3>5. Tunggu disetujui, lalu buka</h3><p>Setelah disetujui, tokomu tampil di daftar toko. Aktifkan notifikasi dan mulai menerima pesanan.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="sr-sell-tips">
+    <div>
+      <h2>Tips foto yang membuat orang lapar</h2>
+      <ul>
+        <li>Foto di dekat jendela pada siang hari. Hindari lampu kuning dan blitz.</li>
+        <li>Ambil dari atas atau miring sedikit, dengan alas polos seperti meja kayu atau kain.</li>
+        <li>Satu menu, satu foto, jangan terlalu banyak benda di sekitarnya.</li>
+        <li>Banner paling bagus berbentuk lebar (3:1), misalnya 1800 × 600 piksel. Foto HD sampai 10 MB boleh, nanti dioptimalkan otomatis tanpa pecah.</li>
+        <li>Logo berbentuk persegi, minimal 400 × 400 piksel.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Cara mendapatkan QRIS</h2>
+      <ul>
+        <li>QRIS untuk usaha disediakan oleh bank atau aplikasi pembayaran yang mendukung pedagang. Daftarkan usahamu di sana dulu.</li>
+        <li>Unduh atau tangkap layar QRIS-nya secara utuh, empat sudut kotak QR harus terlihat.</li>
+        <li>Nama yang tampil di QRIS sebaiknya sama dengan nama tokomu, supaya pelanggan yakin.</li>
+        <li>Kalau mengganti QRIS, unggah yang baru di Pengaturan toko. Admin akan memeriksanya lagi.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sr-sell-faq">
+    <h2>Yang sering ditanyakan</h2>
+    <details><summary>Berapa biayanya?</summary><p>Daftar dan memasang toko gratis. Penjual-penjual awal bebas komisi. Kalau nanti ada komisi, besarnya kecil, ditagih sebulan sekali, dan kamu diberi tahu lebih dulu. Kami tidak memasang iklan.</p></details>
+    <details><summary>Apakah uangnya lewat Sandyakala Rasa?</summary><p>Tidak. Pelanggan membayar langsung ke QRIS-mu. Kamulah yang mengecek uang masuk dan menekan konfirmasi.</p></details>
+    <details><summary>Saya tidak punya QRIS usaha, bagaimana?</summary><p>Kamu perlu QRIS dulu untuk berjualan di sini. Daftarkan usahamu di bank atau aplikasi pembayaran yang menyediakan QRIS untuk pedagang. Setelah punya, unggah di Pengaturan toko.</p></details>
+    <details><summary>Bagaimana kalau pelanggan tidak jadi bayar?</summary><p>Pesanan yang tidak dibayar dalam 15 menit dibatalkan otomatis dan stok dikembalikan.</p></details>
+    <details><summary>Butuh bantuan?</summary><p>Lihat halaman <a class="sr-textlink" href="/bantuan">Bantuan</a> atau hubungi admin lewat kontak di sana.</p></details>
+  </section>
+
+  <section class="sr-sell-cta">
+    <h2>Siap membuka tokomu?</h2>
+    <p>Pendaftaran hanya beberapa menit.</p>
+    <a class="sr-btn lg" href="<%= user && user.role === 'merchant' ? '/merchant' : '/daftar?sebagai=merchant' %>"><%= user && user.role === 'merchant' ? 'Buka dashboard toko' : 'Daftar jadi penjual' %></a>
+  </section>
+</article>

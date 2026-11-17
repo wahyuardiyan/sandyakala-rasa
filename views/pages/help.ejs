@@ -1,0 +1,28 @@
+<article class="sr-prose">
+  <header class="sr-pagehead"><h1>Bantuan</h1><p>Jawaban untuk pertanyaan yang paling sering muncul.</p></header>
+
+  <h2>Untuk pelanggan</h2>
+  <details><summary>Bagaimana cara memesan?</summary><p>Buat akun pelanggan, pilih toko, tambahkan menu ke keranjang, lalu checkout. Isi data penerima, bayar lewat QRIS yang muncul, dan tekan "Saya sudah membayar". Penjual akan memeriksa pembayaranmu lalu memproses pesanan.</p></details>
+  <details><summary>Saya sudah bayar, tapi pesanan belum diproses.</summary><p>Penjual harus memastikan uangnya masuk dulu. Tunggu sebentar, lalu muat ulang halaman pesananmu. Kalau lama tidak ada kabar, tekan "Chat penjual" di halaman pesanan.</p></details>
+  <details><summary>Apa yang terjadi kalau saya telat membayar?</summary><p>Pesanan punya batas waktu bayar 15 menit. Setelah itu pesanan dibatalkan otomatis dan stok dikembalikan. Kamu bisa memesan lagi.</p></details>
+  <details><summary>Bagaimana membatalkan pesanan?</summary><p>Selama belum dibayar, buka halaman pesanan lalu pilih "Batalkan pesanan". Kalau sudah dibayar, hubungi penjual lewat WhatsApp. Pengembalian dana diurus langsung dengan penjual karena uangnya masuk ke penjual.</p></details>
+  <details><summary>Pesanan tidak sampai atau tidak sesuai.</summary><p>Hubungi penjual lewat WhatsApp dari halaman pesanan. Kalau belum selesai, hubungi kami lewat kontak di bawah.</p></details>
+  <details><summary>Saya lupa password.</summary><p>Minta tautan atur ulang ke admin lewat kontak di bawah. Admin akan mengirim tautan yang berlaku satu jam. Buka tautan itu dan buat password baru.</p></details>
+
+  <h2>Untuk penjual</h2>
+  <details><summary>Bagaimana mulai berjualan?</summary><p>Daftar sebagai penjual, lalu buka Pengaturan toko: isi profil dan nomor WhatsApp, lalu unggah QRIS milikmu. Tambahkan menu di bagian Menu. Setelah admin menyetujui tokomu dan QRIS-mu, tokomu tampil untuk pelanggan.</p></details>
+  <details><summary>Kenapa tokoku belum tampil?</summary><p>Tokomu harus disetujui admin dulu, dan QRIS-mu harus terverifikasi. Langkah yang masih kurang tertera di bagian "Langkah awal" pada halaman Ringkasan.</p></details>
+  <details><summary>Kapan saya menekan "Konfirmasi pembayaran diterima"?</summary><p>Hanya setelah kamu melihat uangnya masuk di aplikasi pembayaranmu, dengan nominal yang sama persis dengan total pesanan. Jangan mengandalkan tangkapan layar dari pelanggan.</p></details>
+  <details><summary>Ke mana uang pembayaran masuk?</summary><p>Langsung ke rekening atau e-wallet pemilik QRIS, yaitu kamu. Sandyakala Rasa tidak menerima atau menahan uang pembayaran.</p></details>
+  <details><summary>Kenapa QRIS-ku "menunggu verifikasi"?</summary><p>Setiap QRIS baru atau yang diganti diperiksa admin dulu untuk mencegah penipuan. Pastikan gambarnya jelas dan namanya sesuai tokomu.</p></details>
+
+  <% if (contact.email || contact.wa) { %>
+  <h2>Hubungi kami</h2>
+  <p>
+    <% if (contact.wa) { %><a class="sr-textlink" href="<%= waLink(contact.wa, 'Halo admin Sandyakala Rasa, saya butuh bantuan.') %>" target="_blank" rel="noopener">WhatsApp admin</a><% } %>
+    <% if (contact.email && contact.wa) { %> · <% } %>
+    <% if (contact.email) { %><a class="sr-textlink" href="mailto:<%= contact.email %>"><%= contact.email %></a><% } %>
+  </p>
+  <% } %>
+  <p class="hint">Baca juga <a href="/syarat">Syarat dan Ketentuan</a> dan <a href="/privasi">Kebijakan Privasi</a>.</p>
+</article>

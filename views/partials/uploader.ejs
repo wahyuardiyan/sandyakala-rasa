@@ -1,0 +1,15 @@
+<%# Kotak unggah gambar dengan pratinjau. Parameter: id, name, label, shape (cover|logo|menu|qris), current, hint, preview (opsional, id kotak pratinjau lain) %>
+<div class="sr-up sr-up-<%= shape %>" data-up>
+  <span class="sr-up-label"><%= label %></span>
+  <label class="sr-up-box" for="<%= id %>">
+    <img class="sr-up-img<%= current ? '' : ' hidden' %>" src="<%= current || '' %>" alt="">
+    <span class="sr-up-ph<%= current ? ' hidden' : '' %>">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l4-4 3 3 4-5 5 6M4 5h16v14H4zM9 9.5h.01"/></svg>
+      <b>Pilih foto</b>
+    </span>
+    <span class="sr-up-change"><%= current ? 'Ganti foto' : 'Pilih foto' %></span>
+  </label>
+  <input class="sr-up-input" id="<%= id %>" name="<%= name %>" type="file" accept="image/jpeg,image/png,image/webp" data-max-mb="10">
+  <p class="sr-up-info" aria-live="polite"></p>
+  <% if (locals.hint) { %><p class="hint sr-up-hint"><%= hint %></p><% } %>
+</div>

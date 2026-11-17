@@ -1,0 +1,82 @@
+<%
+  const first = user ? user.name.trim().split(' ')[0] : null;
+  const isCustomer = user && user.role === 'customer';
+%>
+<section class="sr-hero">
+  <%- include('../partials/hero-dusk') %>
+  <div class="sr-wrap sr-hero-in">
+    <% if (first) { %>
+      <h1><%= greeting %>, <%= first %>.</h1>
+      <p class="lede"><%= isCustomer ? 'Mau makan apa hari ini? Cari menunya, atau lihat toko yang sedang buka.' : 'Ini tampilan toko-toko untuk pelanggan.' %></p>
+    <% } else { %>
+      <h1>Masakan UMKM di sekitarmu, satu keranjang.</h1>
+      <p class="lede">Pilih dari warung dan dapur rumahan lokal, lalu bayar langsung ke penjualnya lewat QRIS.</p>
+    <% } %>
+    <form class="sr-find" action="/toko" method="get" role="search">
+      <input type="search" name="q" maxlength="80" placeholder="Cari makanan atau toko" aria-label="Cari makanan atau toko">
+      <button type="submit">Cari</button>
+    </form>
+  </div>
+</section>
+
+<div class="sr-wrap">
+  <section class="sr-sec" aria-labelledby="h-kat">
+    <h2 id="h-kat">Mau yang mana?</h2>
+    <ul class="sr-cats">
+      <li><a href="/toko">Semua toko</a></li>
+      <% categories.forEach(function (c) { %><li><a href="/toko?kategori=<%= c.slug %>"><%= c.name %><% if (c.store_count > 0) { %><small><%= c.store_count %></small><% } %></a></li><% }) %>
+    </ul>
+  </section>
+
+  <section class="sr-sec" aria-labelledby="h-toko">
+    <h2 id="h-toko">Toko yang sedang ramai</h2>
+    <% if (featured.length) { %>
+      <p class="sub">Diurutkan dari yang paling sering menyelesaikan pesanan.</p>
+      <ul class="sr-rows"><% featured.forEach(function (s) { %><%- include('../partials/store-row', { s: s }) %><% }) %></ul>
+      <p class="sr-more"><a href="/toko">Lihat semua toko (<%= storeCount %>)</a></p>
+    <% } else { %>
+      <div class="sr-empty">
+        <p>Belum ada toko yang buka di Sandyakala Rasa. Kamu bisa jadi yang pertama: daftarkan warung atau dapur rumahanmu, gratis.</p>
+        <a class="sr-btn lg" href="/daftar?sebagai=merchant">Daftar sebagai penjual</a>
+      </div>
+    <% } %>
+  </section>
+
+  <section class="sr-sec" aria-labelledby="h-cerita">
+    <div class="sr-story">
+      <div>
+        <h2 id="h-cerita">Dari dapur tetangga ke depan pintumu.</h2>
+        <p>Kamu memesan lewat HP, penjual langsung dapat kabar dan mulai memasak, lalu kurir mengantar pesananmu selagi masih hangat.</p>
+      </div>
+      <%- include('../partials/cerita') %>
+    </div>
+  </section>
+
+  <section class="sr-sec" aria-labelledby="h-cara">
+    <h2 id="h-cara">Cara memesan</h2>
+    <ol class="sr-steps" style="margin-top:1.25rem">
+      <li><b>Pilih menu dari satu toko</b><span>Satu pesanan untuk satu toko, supaya makanannya datang bersamaan.</span></li>
+      <li><b>Bayar lewat QRIS toko</b><span>Scan dengan aplikasi apa pun yang mendukung QRIS, lalu unggah bukti pembayaran dan tekan "Saya sudah membayar".</span></li>
+      <li><b>Toko memastikan, lalu memasak</b><span>Pesananmu diproses setelah penjual melihat uangnya masuk.</span></li>
+    </ol>
+    <p class="sr-note">Uangmu langsung ke penjual. Sandyakala Rasa tidak memegang pembayaranmu.</p>
+  </section>
+</div>
+
+<% if (!user || user.role === 'merchant') { %>
+<section class="sr-sell" aria-labelledby="h-jual">
+  <div class="sr-wrap">
+    <div>
+      <h2 id="h-jual">Punya warung atau dapur rumahan?</h2>
+      <p>Buka toko online sendiri tanpa biaya pendaftaran. Kamu yang mengatur menu, harga, dan jam buka. Uang pesanan masuk langsung ke QRIS-mu.</p>
+      <a class="sr-btn lg" href="<%= user ? '/merchant' : '/daftar?sebagai=merchant' %>"><%= user ? 'Buka dashboard toko' : 'Daftar sebagai penjual' %></a>
+    </div>
+    <ol>
+      <li>Daftar dan isi nama tokomu.</li>
+      <li>Tambahkan menu beserta foto dan harganya.</li>
+      <li>Unggah gambar QRIS resmi milikmu.</li>
+      <li>Admin memeriksa, lalu tokomu tampil untuk pelanggan.</li>
+    </ol>
+  </div>
+</section>
+<% } %>

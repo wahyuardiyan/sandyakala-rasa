@@ -1,0 +1,67 @@
+<% const e = locals.errors || {}; const merchant = form.role === 'merchant'; const count = Object.keys(e).length; %>
+<h1 class="title">Buat akun</h1>
+<p class="lede">Gratis. Mulai dengan memilih untuk apa kamu memakai Sandyakala Rasa.</p>
+
+<% if (count) { %><div class="alert" role="alert"><%= count === 1 ? 'Satu isian perlu dibetulkan.' : count + ' isian perlu dibetulkan.' %></div><% } %>
+
+<form method="post" action="/daftar" novalidate data-form>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <fieldset>
+    <legend>Kamu ingin</legend>
+    <label class="opt <%= merchant ? '' : 'is-on' %>">
+      <input type="radio" name="role" value="customer" <%= merchant ? '' : 'checked' %>>
+      <b>Memesan makanan</b>
+      <small>Jelajahi toko UMKM lalu bayar langsung lewat QRIS milik penjual.</small>
+    </label>
+    <label class="opt <%= merchant ? 'is-on' : '' %>">
+      <input type="radio" name="role" value="merchant" <%= merchant ? 'checked' : '' %>>
+      <b>Berjualan</b>
+      <small>Buka toko, atur menu, dan terima pesanan. Toko tampil setelah diperiksa admin.</small>
+    </label>
+  </fieldset>
+
+  <div class="field <%= e.name ? 'has-error' : '' %>">
+    <label for="name">Nama lengkap</label>
+    <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" value="<%= form.name || '' %>" <%= e.name ? 'aria-invalid="true" aria-describedby="name-msg"' : '' %>>
+    <% if (e.name) { %><p class="msg" id="name-msg"><%= e.name %></p><% } %>
+  </div>
+
+  <div class="reveal <%= merchant ? 'open' : '' %>" id="store-reveal" <%= merchant ? '' : 'inert' %>>
+    <div>
+      <div class="field <%= e.store_name ? 'has-error' : '' %>">
+        <label for="store_name">Nama toko</label>
+        <input id="store_name" name="store_name" type="text" maxlength="100" value="<%= form.store_name || '' %>" placeholder="Contoh: Warung Nasi Bu Sari" <%= e.store_name ? 'aria-invalid="true" aria-describedby="store-msg"' : '' %>>
+        <% if (e.store_name) { %><p class="msg" id="store-msg"><%= e.store_name %></p><% } else { %><p class="hint">Nama ini tampil di halaman tokomu.</p><% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="field <%= e.identifier ? 'has-error' : '' %>">
+    <label for="identifier">Email atau nomor telepon</label>
+    <input id="identifier" name="identifier" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="150" value="<%= form.identifier || '' %>" placeholder="nama@email.com atau 0812 3456 7890" <%= e.identifier ? 'aria-invalid="true" aria-describedby="id-msg"' : '' %>>
+    <% if (e.identifier) { %><p class="msg" id="id-msg"><%= e.identifier %></p><% } %>
+  </div>
+
+  <div class="field <%= e.password ? 'has-error' : '' %>">
+    <label for="password">Password</label>
+    <div class="pw">
+      <input id="password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="72" <%= e.password ? 'aria-invalid="true" aria-describedby="pw-msg"' : 'aria-describedby="pw-hint"' %>>
+      <button type="button" data-reveal="password" aria-pressed="false">Lihat</button>
+    </div>
+    <% if (e.password) { %><p class="msg" id="pw-msg"><%= e.password %></p><% } %>
+    <div class="meter" id="meter" data-level="0" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="meter-text" id="pw-hint" aria-live="polite"><%= e.password ? '' : 'Minimal 8 karakter.' %></p>
+  </div>
+
+  <div class="field <%= e.password_confirmation ? 'has-error' : '' %>">
+    <label for="password_confirmation">Ulangi password</label>
+    <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required maxlength="72" <%= e.password_confirmation ? 'aria-invalid="true" aria-describedby="pc-msg"' : '' %>>
+    <p class="msg" id="pc-msg" <%= e.password_confirmation ? '' : 'hidden' %>><%= e.password_confirmation || 'Password belum sama.' %></p>
+  </div>
+
+  <button class="btn" type="submit" data-busy="Membuat akun…">Buat akun</button>
+</form>
+
+<p class="fine">Dengan membuat akun, kamu setuju dengan <a href="/syarat" target="_blank" rel="noopener">Syarat dan Ketentuan</a> serta <a href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</p>
+<p class="swap">Sudah punya akun? <a href="/masuk">Masuk</a></p>

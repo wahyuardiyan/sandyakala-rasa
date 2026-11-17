@@ -1,0 +1,46 @@
+{
+  "name": "sandyakala-rasa",
+  "version": "1.0.0",
+  "description": "Sandyakala Rasa - Marketplace UMKM Kuliner Lokal (Node.js + Express)",
+  "main": "src/server.js",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "build:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/app.css --watch",
+    "setup": "node scripts/setup.js",
+    "seed": "node scripts/seed.js",
+    "demo": "node scripts/demo-toko.js",
+    "create-admin": "node scripts/create-admin.js",
+    "backup": "node scripts/backup.js",
+    "check": "node scripts/check.js",
+    "test": "node --test",
+    "vapid": "node scripts/vapid.js",
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.7.0",
+    "cookie-session": "^2.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "knex": "^3.1.0",
+    "multer": "^2.0.0",
+    "mysql2": "^3.11.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.33.5"
+  },
+  "optionalDependencies": {
+    "nodemailer": "^6.9.16",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

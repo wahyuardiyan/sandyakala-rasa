@@ -1,0 +1,17 @@
+<a href="/toko/<%= s.slug %>" class="card group block overflow-hidden transition hover:-translate-y-0.5">
+  <%- include('thumb', { src: s.cover || s.logo, emoji: s.category_emoji, cls: 'h-36 w-full', alt: s.name }) %>
+  <div class="p-4">
+    <div class="flex items-start justify-between gap-2">
+      <h3 class="font-serif text-xl font-bold leading-tight group-hover:text-terra"><%= s.name %></h3>
+      <% const open = isOpenNow(s); %>
+      <span class="badge shrink-0 <%= s.is_accepting && open ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-200 text-stone-600' %>"><%= !s.is_accepting ? 'Tutup' : (open ? 'Buka' : 'Di luar jam') %></span>
+    </div>
+    <p class="mt-1 flex items-center gap-1 text-xs text-cocoa-400">
+      <span class="text-amber-500"><%- icon('star', 'w-3.5 h-3.5') %></span>
+      <b class="text-cocoa"><%= stars(s.rating_avg) %></b> (<%= s.review_count %> ulasan)
+      <% if (s.city) { %> · <%= s.city %><% } %>
+    </p>
+    <p class="mt-1 text-xs text-cocoa-400"><%= s.category_name || 'Kuliner' %> · <%= s.open_time %>–<%= s.close_time %></p>
+    <% if (s.min_price) { %><p class="mt-2 text-xs text-cocoa-500">Mulai dari <b class="text-terra"><%= rp(s.min_price) %></b></p><% } %>
+  </div>
+</a>

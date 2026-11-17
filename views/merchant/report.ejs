@@ -1,0 +1,25 @@
+<div class="sr-toolbar">
+  <p>Hanya menghitung pesanan yang pembayarannya sudah kamu konfirmasi.</p>
+  <div class="sr-chips" style="margin:0">
+    <a href="/merchant/laporan.xlsx?hari=<%= range %>" download>Unduh Excel</a>
+    <% [7, 30, 90].forEach(function (d) { %><a href="/merchant/laporan?hari=<%= d %>" <%- range === d ? 'class="is-active" aria-current="true"' : '' %>><%= d %> hari</a><% }) %>
+  </div>
+</div>
+<dl class="sr-figs">
+  <div><dt>Pendapatan</dt><dd><%= rp(total) %></dd></div>
+  <div><dt>Jumlah pesanan</dt><dd><%= orders %></dd></div>
+  <div><dt>Rata-rata per pesanan</dt><dd><%= rp(avg) %></dd></div>
+</dl>
+<section class="sr-block first"><h2>Pendapatan <%= range %> hari terakhir</h2><div class="sr-chart"><%- chart %></div></section>
+<div class="sr-cols2 sr-block">
+  <section><h2>Menu terlaris</h2>
+    <% if (!top.length) { %><p class="sr-empty-line">Belum ada data.</p><% } else { %>
+      <div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Menu</th><th>Terjual</th><th>Pendapatan</th></tr></thead><tbody>
+        <% top.forEach(function (t) { %><tr><td><%= t.name %></td><td><%= t.qty %></td><td><%= rp(t.revenue) %></td></tr><% }) %></tbody></table></div>
+    <% } %></section>
+  <section><h2>Per hari</h2>
+    <% if (!table.length) { %><p class="sr-empty-line">Belum ada data.</p><% } else { %>
+      <div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Tanggal</th><th>Pesanan</th><th>Pendapatan</th></tr></thead><tbody>
+        <% table.forEach(function (r) { %><tr><td><%= r.day %></td><td><%= r.count %></td><td><%= rp(r.total) %></td></tr><% }) %></tbody></table></div>
+    <% } %></section>
+</div>

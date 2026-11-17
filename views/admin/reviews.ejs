@@ -1,0 +1,34 @@
+<div class="sr-toolbar">
+  <form method="get" class="sr-searchline"><input name="q" value="<%= q %>" placeholder="Cari toko, pelanggan, atau isi ulasan" maxlength="80" aria-label="Cari ulasan"><% if (f) { %><input type="hidden" name="tampil" value="<%= f %>"><% } %><button class="sr-btn sm">Cari</button></form>
+</div>
+<div class="sr-chips">
+  <% [['', 'Semua'], ['dilaporkan', 'Dilaporkan penjual'], ['rendah', 'Bintang 1-2'], ['tampil', 'Tampil'], ['sembunyi', 'Disembunyikan']].forEach(function (t) { %>
+    <a href="/admin/ulasan<%= t[0] ? '?tampil=' + t[0] : '' %>" <%- f === t[0] ? 'class="is-active" aria-current="true"' : '' %>><%= t[1] %></a>
+  <% }) %>
+</div>
+<% if (!reviews.length) { %><div class="sr-empty"><p>Tidak ada ulasan di bagian ini.</p></div><% } else { %>
+<ul class="sr-reviews">
+  <% reviews.forEach(function (r) { %>
+    <li>
+      <p class="who"><b><%= r.user_name %></b> untuk <a class="sr-textlink" href="/toko/<%= r.store_slug %>"><%= r.store_name %></a> <span><%= fmtDate(r.created_at) %> · pesanan #<%= r.order_code %></span></p>
+      <p class="stars" aria-label="<%= r.rating %> dari 5"><%= '★'.repeat(r.rating) %><span><%= '★'.repeat(5 - r.rating) %></span></p>
+      <p class="txt<%= r.comment ? '' : ' faint' %>"><%= r.comment || 'Tanpa komentar.' %></p>
+      <% if (r.reply) { %><p class="reply"><b>Balasan toko</b><%= r.reply %></p><% } %>
+      <% if (r.report_reason && !r.hidden) { %><p class="sr-notice">Dilaporkan penjual: <%= r.report_reason %></p><% } %>
+      <% if (r.hidden) { %><p class="sr-notice bad">Disembunyikan<%= r.hidden_reason ? ': ' + r.hidden_reason : '' %></p><% } %>
+      <% if (r.hidden) { %>
+        <form method="post" action="/admin/ulasan/<%= r.id %>/sembunyikan"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="hide" value="0"><button class="sr-btn sm ghost">Tampilkan lagi</button></form>
+      <% } else { %>
+        <details class="sr-replybox">
+          <summary>Sembunyikan ulasan ini</summary>
+          <form method="post" action="/admin/ulasan/<%= r.id %>/sembunyikan" class="sr-form" data-confirm="Sembunyikan ulasan ini dari halaman toko?">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="hide" value="1">
+            <div class="f"><label for="why-<%= r.id %>">Alasan (dikirim ke penjual)</label><input id="why-<%= r.id %>" name="reason" maxlength="200" placeholder="Contoh: kata kasar, iklan, bukan soal pesanan"></div>
+            <button class="sr-btn sm danger">Sembunyikan</button>
+          </form>
+        </details>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
+<% } %>

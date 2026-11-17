@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf4ea">
+  <title><%= locals.title ? title + ' · ' : '' %>Sandyakala Rasa</title>
+  <% const ogTitle = (locals.title ? title + ' · ' : '') + 'Sandyakala Rasa';
+     const ogDesc = locals.metaDesc || 'Pesan masakan UMKM kuliner lokal dan bayar langsung lewat QRIS milik penjual. Di setiap rasa, ada cerita.';
+     const ogImg = locals.ogImage ? (/^https?:/.test(ogImage) ? ogImage : baseUrl + ogImage) : baseUrl + '/img/og.png'; %>
+  <meta name="description" content="<%= ogDesc %>">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sandyakala Rasa">
+  <meta property="og:title" content="<%= ogTitle %>">
+  <meta property="og:description" content="<%= ogDesc %>">
+  <meta property="og:image" content="<%= ogImg %>">
+  <meta property="og:url" content="<%= baseUrl + (path === '/' ? '' : path) %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body class="min-h-screen flex flex-col">
+  <%- include('../partials/latar') %>
+  <a class="sr-skip" href="#isi">Langsung ke isi halaman</a>
+  <%- include('../partials/viewas') %>
+  <header class="sr-head">
+    <div class="sr-wrap">
+      <a class="sr-brand" href="/"><img src="/img/logo-mark.png" alt=""><span>Sandyakala Rasa</span></a>
+      <nav class="sr-nav" aria-label="Utama">
+        <a href="/toko" <%= path.startsWith('/toko') ? 'aria-current="page"' : '' %>>Toko</a>
+        <% if (!user || user.role === 'merchant') { %><a href="<%= user ? '/merchant' : '/jualan' %>"><%= user ? 'Tokoku' : 'Jualan di sini' %></a><% } %>
+      </nav>
+      <form class="sr-search" action="/toko" method="get" role="search">
+        <input type="search" name="q" maxlength="80" placeholder="Cari makanan atau toko" aria-label="Cari makanan atau toko" value="<%= locals.filters ? filters.q : '' %>">
+      </form>
+      <div class="sr-acts">
+        <% if (user && user.role === 'customer') { %>
+          <a class="sr-link sr-fav" href="/favorit" aria-label="Toko favorit"><span aria-hidden="true">♥</span><span class="t">Favorit</span></a>
+          <a class="sr-link sr-cart" href="/keranjang" aria-label="Keranjang"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l.4 2M7 13h10l3-8H5.4M7 13L5.4 5M7 13l-2 4h13M9 21a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z"/></svg><span class="t">Keranjang</span><% if (cartCount > 0) { %><span class="sr-cartn" aria-label="<%= cartCount %> item"><%= cartCount %></span><% } %></a>
+        <% } %>
+        <% if (user) { %>
+          <a class="sr-link sr-bell" href="/notifikasi" data-last="<%= locals.lastNotifId || 0 %>" data-uid="<%= user.id %>"<% if (locals.pushOn) { %> data-key="<%= locals.vapidKey %>" data-csrf="<%= csrfToken %>"<% } %> aria-label="Notifikasi"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="sr-cartn <%= locals.unreadNotif > 0 ? '' : 'hidden' %>" data-notif-badge><%= locals.unreadNotif || 0 %></span></a>
+          <div class="sr-menu">
+            <button type="button" class="sr-link" data-toggle="user-menu" aria-haspopup="true"><%= user.name.split(' ')[0] %> ▾</button>
+            <div id="user-menu" class="sr-menu-list hidden">
+              <% if (user.role === 'customer') { %>
+                <a href="/pesanan">Pesanan saya</a><a href="/favorit">Toko favorit</a><a href="/voucher">Voucher saya</a><a href="/profil">Profil</a>
+              <% } else if (user.role === 'merchant') { %>
+                <a href="/merchant">Dashboard toko</a>
+              <% } else { %>
+                <a href="/admin">Dashboard admin</a>
+              <% } %>
+              <form method="post" action="/keluar"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit">Keluar</button></form>
+            </div>
+          </div>
+        <% } else { %>
+          <a class="sr-link" href="/masuk">Masuk</a>
+          <a class="sr-btn" href="/daftar">Daftar</a>
+        <% } %>
+      </div>
+    </div>
+    <%- include('../partials/garland') %>
+  </header>
+
+  <main id="isi" class="sr-main flex-1">
+    <% if (locals.flash) { %><div class="sr-wrap"><div class="sr-flash <%= flash.type === 'error' ? 'error' : '' %>" role="status"><%= flash.msg %></div></div><% } %>
+    <% if (locals.bare) { %><%- body %><% } else { %><div class="sr-wrap" style="padding-top:1.5rem"><%- body %></div><% } %>
+  </main>
+
+  <footer class="sr-foot">
+    <div class="sr-wrap">
+      <b>Sandyakala Rasa</b>
+      <p>Di setiap rasa, ada cerita.</p>
+      <p>Pembayaran langsung ke penjual lewat QRIS. <a href="/daftar?sebagai=merchant">Buka toko</a></p>
+      <nav class="sr-footnav" aria-label="Informasi"><a href="/bantuan">Bantuan</a><a href="/syarat">Syarat</a><a href="/privasi">Privasi</a></nav>
+    </div>
+  </footer>
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

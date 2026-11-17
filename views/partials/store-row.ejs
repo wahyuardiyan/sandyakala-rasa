@@ -1,0 +1,12 @@
+<li class="sr-row">
+  <% if (s.cover || s.logo) { %><img class="pic" src="<%= s.cover || s.logo %>" alt="" loading="lazy"><% } else { %><span class="pic ph" aria-hidden="true"><%= s.name.trim().charAt(0).toUpperCase() %></span><% } %>
+  <div>
+    <h3><a href="/toko/<%= s.slug %>"><%= s.name %></a></h3>
+    <p class="meta"><%= s.category_name || 'Kuliner' %><%= s.city ? ' di ' + s.city : '' %></p>
+    <p class="meta"><%- s.review_count > 0 ? '<b>★ ' + stars(s.rating_avg) + '</b> dari ' + s.review_count + ' ulasan' : 'Belum ada ulasan' %><%- s.min_price ? ', menu mulai <b>' + rp(s.min_price) + '</b>' : '' %></p>
+  </div>
+  <div class="go">
+    <%= s.is_accepting ? (isOpenNow(s) ? (isAllDay(s) ? 'Buka 24 jam' : 'Buka sampai ' + closeText(s)) : 'Buka lagi ' + s.open_time) : 'Sedang tidak menerima pesanan' %><br>
+    <a href="/toko/<%= s.slug %>">Lihat menu</a>
+  </div>
+</li>

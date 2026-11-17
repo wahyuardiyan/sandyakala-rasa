@@ -1,0 +1,41 @@
+<p class="sr-back"><a href="/merchant/tagihan">Kembali ke Tagihan</a></p>
+<% const st = INVOICE_STATUS[inv.status]; const late = inv.status === 'unpaid' && inv.due_at && new Date(inv.due_at) < now; %>
+<section class="sr-block first">
+  <h2>Tagihan <%= monthLabel(inv.period) %></h2>
+  <p><%- include('../partials/state', { label: late ? 'Lewat jatuh tempo' : st.label, cls: late ? 'bg-red-100' : st.cls }) %></p>
+  <dl class="sr-defs">
+    <dt>Pesanan selesai</dt><dd><%= inv.order_count %></dd>
+    <dt>Dasar perhitungan</dt><dd><%= rp(inv.base_total) %></dd>
+    <dt>Komisi</dt><dd><%= inv.pct %>%</dd>
+    <dt>Yang harus dibayar</dt><dd><b><%= rp(inv.amount) %></b></dd>
+    <dt>Jatuh tempo</dt><dd><%= inv.due_at ? fmtDate(inv.due_at) : '-' %></dd>
+  </dl>
+  <% if (inv.note) { %><div class="sr-notice bad"><p><%= inv.note %></p></div><% } %>
+</section>
+
+<% if (inv.status === 'unpaid' || inv.status === 'submitted') { %>
+<section class="sr-block">
+  <h2>Cara membayar</h2>
+  <% if (!cfg.bank && !cfg.qris) { %><p class="sr-empty-line">Tujuan pembayaran belum diatur admin. Hubungi admin.</p><% } %>
+  <% if (cfg.bank) { %><pre class="sr-logbox"><%= cfg.bank %></pre><% } %>
+  <% if (cfg.qris) { %><img src="<%= cfg.qris %>" alt="QRIS pembayaran komisi" class="sr-qrthumb"><% } %>
+  <% if (inv.status === 'unpaid') { %>
+  <h2 style="margin-top:1.5rem">Unggah bukti pembayaran</h2>
+  <form method="post" action="/merchant/tagihan/<%= inv.id %>/bukti" enctype="multipart/form-data" class="sr-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="f"><label for="proof">Foto bukti transfer</label><input id="proof" name="proof" type="file" accept="image/jpeg,image/png,image/webp" required></div>
+    <button class="sr-btn">Kirim bukti</button>
+  </form>
+  <% } else { %>
+    <p>Bukti sudah dikirim dan sedang dicek admin.</p>
+    <% if (inv.proof_image) { %><a class="sr-textlink" href="<%= inv.proof_image %>" target="_blank" rel="noopener">Lihat bukti yang kamu kirim</a><% } %>
+  <% } %>
+</section>
+<% } %>
+
+<section class="sr-block">
+  <h2>Pesanan dalam tagihan ini</h2>
+  <ul class="sr-plain">
+    <% orders.forEach(function (o) { %><li><a class="sr-textlink" href="/merchant/pesanan/<%= o.code %>">#<%= o.code %></a> · <%= fmtDate(o.done_at) %> · <%= rp(Math.max(0, o.subtotal - o.discount)) %></li><% }) %>
+  </ul>
+</section>

@@ -1,0 +1,6 @@
+<%# Parameter: src, emoji, cls (kelas ukuran/bentuk) %>
+<% if (locals.src) { %>
+  <img src="<%= src %>" alt="<%= locals.alt || '' %>" loading="lazy" class="<%= locals.cls || '' %> object-cover">
+<% } else { %>
+  <div class="<%= locals.cls || '' %> flex items-center justify-center bg-gradient-to-br from-[#F6DFD0] via-[#EBBFA2] to-[#CB7446] text-3xl" aria-hidden="true"><%= locals.emoji || '🍽️' %></div>
+<% } %>

@@ -1,0 +1,10 @@
+<header class="sr-pagehead"><h1>Toko favorit</h1></header>
+<% if (!stores.length) { %>
+  <div class="sr-empty">
+    <%- include('../partials/illus', { kind: 'basket' }) %>
+    <p>Belum ada toko favorit. Tekan "Simpan toko" di halaman toko supaya mudah ditemukan lagi.</p>
+    <a class="sr-btn" href="/toko">Lihat toko</a>
+  </div>
+<% } else { %>
+  <ul class="sr-rows"><% stores.forEach(function (s) { %><%- include('../partials/store-row', { s: s }) %><% }) %></ul>
+<% } %>

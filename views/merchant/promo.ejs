@@ -1,0 +1,59 @@
+<% if (errors.length) { %><div class="sr-notice bad" role="alert"><% errors.forEach(function (e) { %><p><%= e %></p><% }) %></div><% } %>
+<section class="sr-block first">
+  <h2>Kode promo</h2>
+  <p class="hint" style="margin-top:0">Voucher tampil di halaman tokomu dan pelanggan menekan <b>Klaim</b> (seperti di Shopee), atau memasukkan kodenya di menu Voucher saya. Saat checkout pelanggan memilih voucher yang sudah diklaim. Potongan hanya dari harga menu (ongkos antar tidak dipotong), dan satu kode hanya bisa dipakai satu kali per pelanggan. Potongan ditanggung tokomu, karena pelanggan membayar langsung ke QRIS-mu dengan harga yang sudah dipotong.</p>
+  <% if (!vouchers.length) { %>
+    <p class="sr-empty-line">Belum ada kode promo.</p>
+  <% } else { %>
+  <ul class="sr-plain sr-vlist">
+    <% vouchers.forEach(function (v) { const over = v.ends_on && v.ends_on < today; %>
+      <li>
+        <b><%= v.code %></b> <span class="sr-st <%= v.active && !over ? 'ok' : 'bad' %>"><%= over ? 'Berakhir' : (v.active ? 'Aktif' : 'Mati') %></span><br>
+        <%= voucherText(v) %><%= v.usage_limit ? ', kuota ' + v.usage_limit : '' %> · diklaim <%= v.claims || 0 %>x · terpakai <%= v.used %>x
+        <div class="sr-actions">
+          <form method="post" action="/merchant/promo/voucher/<%= v.id %>/toggle"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn"><%= v.active ? 'Matikan' : 'Aktifkan' %></button></form>
+          <form method="post" action="/merchant/promo/voucher/<%= v.id %>/hapus" data-confirm="Hapus kode <%= v.code %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn bad">Hapus</button></form>
+        </div>
+      </li>
+    <% }) %>
+  </ul>
+  <% } %>
+  <details class="sr-replybox" <%= errors.length ? 'open' : '' %>>
+    <summary>Buat kode promo baru</summary>
+    <form method="post" action="/merchant/promo/voucher" class="sr-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="f"><label for="code">Kode (huruf dan angka, contoh HEMAT10)</label><input id="code" name="code" maxlength="20" required value="<%= form.code || '' %>" style="text-transform:uppercase" autocomplete="off"></div>
+      <div class="f"><label for="type">Jenis potongan</label>
+        <select id="type" name="type" class="sr-select"><option value="percent" <%= form.type !== 'fixed' ? 'selected' : '' %>>Persen dari harga menu</option><option value="fixed" <%= form.type === 'fixed' ? 'selected' : '' %>>Potongan harga tetap (Rp)</option></select></div>
+      <div class="f"><label for="value">Besar potongan (persen 1-90, atau rupiah)</label><input id="value" name="value" inputmode="numeric" required value="<%= form.value || '' %>"></div>
+      <div class="f"><label for="min_order">Belanja minimal (Rp, kosongkan bila bebas)</label><input id="min_order" name="min_order" data-rupiah inputmode="numeric" value="<%= form.min_order || '' %>"></div>
+      <div class="f"><label for="max_discount">Potongan maksimal (Rp, khusus persen, boleh kosong)</label><input id="max_discount" name="max_discount" data-rupiah inputmode="numeric" value="<%= form.max_discount || '' %>"></div>
+      <div class="f"><label for="usage_limit">Kuota pemakaian (boleh kosong)</label><input id="usage_limit" name="usage_limit" inputmode="numeric" value="<%= form.usage_limit || '' %>"></div>
+      <div class="f"><label for="ends_on">Berlaku sampai tanggal (boleh kosong)</label><input id="ends_on" name="ends_on" type="date" min="<%= today %>" value="<%= form.ends_on || '' %>"></div>
+      <button class="sr-btn">Simpan kode promo</button>
+    </form>
+  </details>
+</section>
+
+<section class="sr-block">
+  <h2>Zona antar</h2>
+  <p class="hint" style="margin-top:0">Atur ongkos antar menurut jarak. Kalau ada zona, pelanggan wajib memilih salah satunya saat checkout dan ongkosnya mengikuti zona itu. Kalau tidak ada zona, tokomu memakai ongkos tetap dari Pengaturan toko (<%= rp(store.delivery_fee) %>).</p>
+  <% if (!zones.length) { %>
+    <p class="sr-empty-line">Belum ada zona. Contoh: "Dalam kompleks" Rp 3.000, "Kelurahan sebelah" Rp 8.000.</p>
+  <% } else { %>
+  <ul class="sr-plain">
+    <% zones.forEach(function (z) { %>
+      <li><b><%= z.name %></b> · <%= z.fee ? rp(z.fee) : 'gratis' %>
+        <form method="post" action="/merchant/promo/zona/<%= z.id %>/hapus" style="display:inline;margin-left:.5rem" data-confirm="Hapus zona <%= z.name %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn bad">Hapus</button></form></li>
+    <% }) %>
+  </ul>
+  <% } %>
+  <form method="post" action="/merchant/promo/zona" class="sr-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="sr-cols2">
+      <div class="f"><label for="zname">Nama zona</label><input id="zname" name="name" maxlength="60" required placeholder="Dalam kompleks"></div>
+      <div class="f"><label for="zfee">Ongkos antar (Rp)</label><input id="zfee" name="fee" data-rupiah inputmode="numeric" placeholder="3.000"></div>
+    </div>
+    <button class="sr-btn sm">Tambah zona</button>
+  </form>
+</section>

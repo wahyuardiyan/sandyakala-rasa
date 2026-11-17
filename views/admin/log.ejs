@@ -1,0 +1,19 @@
+<section class="sr-block first">
+  <h2>Cadangan database</h2>
+  <% if (!backups.length) { %>
+    <p class="sr-empty-line">Belum ada cadangan. Cadangan otomatis dibuat tiap 12 jam, atau jalankan <code>npm run backup</code>.</p>
+  <% } else { %>
+    <ul class="sr-plain">
+      <% backups.forEach(function (b) { %><li><%= b.name %> · <%= Math.round(b.size / 1024) %> KB · <%= fmtDate(b.mtime) %></li><% }) %>
+    </ul>
+  <% } %>
+  <p class="hint">Cadangan tersimpan di folder <code>backups/</code> di server. Salin folder itu secara berkala ke tempat lain (flashdisk atau penyimpanan awan).</p>
+</section>
+<section class="sr-block">
+  <h2>Catatan error terbaru</h2>
+  <% if (!text.trim()) { %>
+    <p class="sr-empty-line">Tidak ada error tercatat. Bagus.</p>
+  <% } else { %>
+    <pre class="sr-logbox"><%= text %></pre>
+  <% } %>
+</section>

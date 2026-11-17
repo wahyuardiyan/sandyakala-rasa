@@ -1,0 +1,37 @@
+<%# Gambar warung beranimasi (CSS saja, berhenti kalau pengguna memilih "kurangi gerakan"). Parameter: greet, line %>
+<div class="sr-welcome<%= locals.scene === 'cerita' ? ' big' : '' %>">
+  <div class="txt">
+    <p class="hi"><%= greet %>, <%= user.name.split(' ')[0] %>.</p>
+    <p class="line"><%= line %></p>
+  </div>
+  <% if (locals.scene === 'cerita') { %><%- include('cerita') %><% } else { %>
+  <svg class="sr-warung" viewBox="0 0 240 150" role="img" aria-label="Gambar warung kecil dengan kuah panas mengepul">
+    <ellipse cx="120" cy="140" rx="104" ry="5" fill="#e0cfba"/>
+    <!-- bangunan -->
+    <rect x="46" y="62" width="148" height="76" fill="#f3e3cc"/>
+    <rect x="46" y="62" width="148" height="76" fill="none" stroke="#b99f84" stroke-width="1.5"/>
+    <!-- tenda belang -->
+    <g class="awning">
+      <path d="M36 62 L50 34 H190 L204 62 Z" fill="#b4501f"/>
+      <path d="M66 34 L62 62 H92 L90 34 Z M114 34 L112 62 H142 L138 34 Z M162 34 L162 62 H192 L186 34 Z" fill="#f2a33a"/>
+      <path d="M36 62 q8 9 17 0 q8 9 17 0 q8 9 17 0 q8 9 17 0 q8 9 17 0 q8 9 17 0 q8 9 17 0 q8 9 17 0 Z" fill="#99410f"/>
+    </g>
+    <!-- meja dan panci -->
+    <rect x="62" y="104" width="116" height="8" fill="#6a5242"/>
+    <rect x="68" y="112" width="6" height="26" fill="#6a5242"/><rect x="166" y="112" width="6" height="26" fill="#6a5242"/>
+    <path d="M92 104 v-16 a6 6 0 0 1 6 -6 h44 a6 6 0 0 1 6 6 v16 Z" fill="#33201a"/>
+    <rect x="88" y="80" width="64" height="4" rx="2" fill="#6a5242"/>
+    <!-- uap -->
+    <g fill="none" stroke="#b99f84" stroke-width="3" stroke-linecap="round">
+      <path class="steam s1" d="M106 76 q-7 -8 0 -16 q7 -8 0 -16"/>
+      <path class="steam s2" d="M120 76 q-7 -8 0 -16 q7 -8 0 -16"/>
+      <path class="steam s3" d="M134 76 q-7 -8 0 -16 q7 -8 0 -16"/>
+    </g>
+    <!-- lampu gantung -->
+    <g class="lamp"><line x1="204" y1="40" x2="204" y2="64" stroke="#6a5242" stroke-width="1.5"/><circle cx="204" cy="70" r="7" fill="#f2a33a"/><circle cx="204" cy="70" r="12" fill="#f2a33a" opacity=".25"/></g>
+    <!-- bintang melayang -->
+    <path class="spark p1" d="M24 40 l3 6 6 1 -4.5 4 1.2 6 -5.7 -3 -5.7 3 1.2 -6 -4.5 -4 6 -1 z" fill="#f2a33a"/>
+    <path class="spark p2" d="M214 22 l2 4 4 .7 -3 2.7 .8 4 -3.8 -2 -3.8 2 .8 -4 -3 -2.7 4 -.7 z" fill="#b4501f"/>
+  </svg>
+  <% } %>
+</div>

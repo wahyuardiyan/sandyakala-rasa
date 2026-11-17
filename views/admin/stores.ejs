@@ -1,0 +1,19 @@
+<div class="sr-chips">
+  <% [['', 'Semua'], ['pending', 'Menunggu verifikasi'], ['qris', 'QRIS menunggu'], ['approved', 'Aktif'], ['suspended', 'Ditangguhkan'], ['rejected', 'Ditolak']].forEach(function (t) { %>
+    <a href="/admin/toko<%= t[0] ? '?status=' + t[0] : '' %>" <%- f === t[0] ? 'class="is-active" aria-current="true"' : '' %>><%= t[1] %></a>
+  <% }) %>
+</div>
+<% if (!stores.length) { %><div class="sr-empty"><p>Tidak ada toko di bagian ini.</p></div><% } else { %>
+<div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Toko</th><th>Pemilik</th><th>Status</th><th>QRIS</th><th>Daftar</th><th></th></tr></thead><tbody>
+  <% stores.forEach(function (s) { %>
+    <tr>
+      <td><b><%= s.name %></b><small><%= s.city || '-' %></small></td>
+      <td><%= s.owner_name %><small><%= s.owner_email || s.owner_phone %></small></td>
+      <td><%- include('../partials/state', { label: STORE_STATUS[s.status].label, cls: STORE_STATUS[s.status].cls }) %></td>
+      <td><%- include('../partials/state', { label: QRIS_STATUS[s.qris_status].label, cls: QRIS_STATUS[s.qris_status].cls }) %></td>
+      <td><%= fmtDate(s.created_at) %></td>
+      <td><a href="/admin/toko/<%= s.id %>" class="sr-btn sm">Periksa</a></td>
+    </tr>
+  <% }) %>
+</tbody></table></div>
+<% } %>

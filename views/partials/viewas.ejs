@@ -1,0 +1,7 @@
+<%# Spanduk mode uji: tampil hanya saat admin sedang masuk sebagai pengguna lain. %>
+<% if (locals.viewAs && user) { %>
+<div role="status" style="background:#33201a;color:#fbf4ea;padding:.55rem 1rem;font-size:.875rem;display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:center;text-align:center">
+  <span>Mode uji: kamu masuk sebagai <b><%= user.name %></b> (<%= user.role === 'merchant' ? 'penjual' : 'pelanggan' %>). Yang kamu ubah di sini tersimpan sungguhan.</span>
+  <form method="post" action="/akhiri-uji" style="margin:0"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" style="background:#f2a33a;color:#33201a;border:0;border-radius:4px;padding:.3rem .8rem;font-weight:600;font-size:.875rem;font-family:inherit;cursor:pointer">Kembali ke admin</button></form>
+</div>
+<% } %>

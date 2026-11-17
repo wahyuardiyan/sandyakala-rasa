@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body class="sr-rc">
+  <main class="sr-rc-paper">
+    <header>
+      <h1><%= shop.name %></h1>
+      <% if (shop.address) { %><p><%= shop.address %></p><% } %>
+      <% if (shop.whatsapp) { %><p>WA <%= shop.whatsapp %></p><% } %>
+    </header>
+    <p class="sr-rc-meta">Pesanan #<%= order.code %><br><%= fmtDateTime(order.created_at) %></p>
+    <p class="sr-rc-meta"><b><%= order.customer_name %></b> · <%= order.customer_phone %><br>
+      <%= order.fulfillment === 'delivery' ? 'Diantar ke: ' + (order.address || '-') : 'Diambil sendiri' %></p>
+    <table>
+      <% order.items.forEach(function (it) { %><tr><td><%= it.qty %> × <%= it.name %></td><td class="r"><%= rp(it.price * it.qty) %></td></tr><% }) %>
+      <tr class="sep"><td>Subtotal</td><td class="r"><%= rp(order.subtotal) %></td></tr>
+      <tr><td>Ongkos antar</td><td class="r"><%= rp(order.delivery_fee) %></td></tr>
+      <% if (order.discount > 0) { %><tr><td>Promo <%= order.voucher_code %></td><td class="r">- <%= rp(order.discount) %></td></tr><% } %>
+      <tr class="tot"><td>Total</td><td class="r"><%= rp(order.total) %></td></tr>
+    </table>
+    <% if (order.note) { %><p class="sr-rc-meta">Catatan: <%= order.note %></p><% } %>
+    <p class="sr-rc-foot">Terima kasih sudah memesan.</p>
+    <p class="sr-rc-act"><button type="button" class="sr-btn" data-print>Cetak</button></p>
+  </main>
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

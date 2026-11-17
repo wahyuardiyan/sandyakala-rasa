@@ -1,0 +1,37 @@
+<%# Gambar kecil beranimasi untuk halaman kosong. Parameter: kind = basket | bell | plate | motor %>
+<% const k = locals.kind || 'plate'; %>
+<svg class="sr-illus <%= k %>" viewBox="0 0 160 110" role="img" aria-label="<%= k === 'basket' ? 'Keranjang kosong' : k === 'bell' ? 'Lonceng pesanan' : k === 'motor' ? 'Motor pengantar' : 'Piring kosong' %>">
+  <ellipse cx="80" cy="100" rx="62" ry="4" fill="#e0cfba"/>
+  <% if (k === 'basket') { %>
+    <g class="bob">
+      <path d="M44 52 h72 l-8 44 h-56 z" fill="#b4501f"/>
+      <path d="M52 62 h56 M50 74 h60 M54 86 h52" stroke="#99410f" stroke-width="2"/>
+      <path d="M52 52 q28 -44 56 0" fill="none" stroke="#6a5242" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <circle class="fl f1" cx="66" cy="40" r="6" fill="#f2a33a"/>
+    <circle class="fl f2" cx="92" cy="36" r="5" fill="#b4501f"/>
+  <% } else if (k === 'bell') { %>
+    <g class="ring">
+      <path d="M80 22 c-20 0 -28 16 -28 34 v16 l-8 10 h72 l-8 -10 v-16 c0 -18 -8 -34 -28 -34 z" fill="#f2a33a"/>
+      <circle cx="80" cy="20" r="4" fill="#6a5242"/>
+      <path d="M72 86 a8 8 0 0 0 16 0 z" fill="#99410f"/>
+    </g>
+    <path class="wave w1" d="M34 50 q-8 8 0 18" fill="none" stroke="#b99f84" stroke-width="3" stroke-linecap="round"/>
+    <path class="wave w1" d="M126 50 q8 8 0 18" fill="none" stroke="#b99f84" stroke-width="3" stroke-linecap="round"/>
+  <% } else if (k === 'motor') { %>
+    <line x1="10" y1="96" x2="150" y2="96" stroke="#b99f84" stroke-width="2" stroke-dasharray="6 8" class="road"/>
+    <g class="drive">
+      <circle cx="52" cy="88" r="9" fill="#33201a"/><circle cx="108" cy="88" r="9" fill="#33201a"/>
+      <path d="M52 88 L72 60 H92 L108 88 M72 60 L68 48 H58" fill="none" stroke="#b4501f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="76" y="34" width="26" height="22" rx="3" fill="#f2a33a"/>
+    </g>
+  <% } else { %>
+    <ellipse cx="80" cy="78" rx="46" ry="12" fill="#f3e3cc" stroke="#b99f84" stroke-width="2"/>
+    <ellipse cx="80" cy="76" rx="30" ry="7" fill="#fbf4ea"/>
+    <g fill="none" stroke="#b99f84" stroke-width="3" stroke-linecap="round">
+      <path class="steam s1" d="M66 60 q-6 -8 0 -15 q6 -8 0 -15"/>
+      <path class="steam s2" d="M80 60 q-6 -8 0 -15 q6 -8 0 -15"/>
+      <path class="steam s3" d="M94 60 q-6 -8 0 -15 q6 -8 0 -15"/>
+    </g>
+  <% } %>
+</svg>

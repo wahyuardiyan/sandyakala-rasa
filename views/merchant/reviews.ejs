@@ -1,0 +1,43 @@
+<section class="sr-block first">
+  <%- include('../partials/rating-box', { rate: rate }) %>
+</section>
+
+<section class="sr-block">
+  <h2>Ulasan dari pelanggan</h2>
+  <% if (!reviews.length) { %>
+    <p class="sr-empty-line">Belum ada ulasan. Ulasan muncul setelah pelanggan menandai pesanannya selesai dan memberi bintang.</p>
+  <% } else { %>
+  <ul class="sr-reviews">
+    <% reviews.forEach(function (r) { %>
+      <li<%= r.hidden ? ' class=hidden-review' : '' %>>
+        <% if (r.hidden) { %><p class="sr-notice bad">Disembunyikan admin<%= r.hidden_reason ? ': ' + r.hidden_reason : '' %>. Ulasan ini tidak tampil di halaman toko dan tidak dihitung dalam rating.</p><% } %>
+        <p class="who"><b><%= r.user_name %></b> <span><%= fmtDate(r.created_at) %> · pesanan #<%= r.order_code %></span></p>
+        <p class="stars" aria-label="<%= r.rating %> dari 5"><%= '★'.repeat(r.rating) %><span><%= '★'.repeat(5 - r.rating) %></span></p>
+        <% if (r.comment) { %><p class="txt"><%= r.comment %></p><% } else { %><p class="txt faint">Pelanggan tidak menulis komentar.</p><% } %>
+        <% if (r.reply) { %><p class="reply"><b>Balasanmu</b><%= r.reply %></p><% } %>
+        <% if (r.report_reason && !r.hidden) { %><p class="hint">Kamu sudah melaporkan ulasan ini ke admin: <%= r.report_reason %></p><% } %>
+        <% if (!r.hidden && !r.report_reason) { %>
+        <details class="sr-replybox">
+          <summary>Laporkan ulasan ini ke admin</summary>
+          <form method="post" action="/merchant/ulasan/<%= r.id %>/laporkan" class="sr-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="f"><label for="rep-<%= r.id %>">Kenapa ulasan ini melanggar? (kata kasar, iklan, bukan soal pesananmu, dll)</label>
+              <input id="rep-<%= r.id %>" name="reason" maxlength="200" required></div>
+            <button class="sr-btn sm ghost">Kirim laporan</button>
+          </form>
+        </details>
+        <% } %>
+        <details class="sr-replybox">
+          <summary><%= r.reply ? 'Ubah balasan' : 'Balas ulasan' %></summary>
+          <form method="post" action="/merchant/ulasan/<%= r.id %>/balas" class="sr-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="f"><label for="reply-<%= r.id %>">Balasanmu (tampil untuk semua pengunjung toko)</label>
+              <textarea id="reply-<%= r.id %>" name="reply" rows="2" maxlength="500"><%= r.reply || '' %></textarea></div>
+            <button class="sr-btn sm">Simpan balasan</button>
+          </form>
+        </details>
+      </li>
+    <% }) %>
+  </ul>
+  <% } %>
+</section>

@@ -1,0 +1,27 @@
+<h1 class="title"><%= greeting %>.</h1>
+<p class="lede">Masuk untuk memesan makanan atau mengelola tokomu.</p>
+
+<% if (locals.error) { %><div class="alert" role="alert"><%= error %></div><% } %>
+
+<form method="post" action="/masuk" novalidate data-form>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="next" value="<%= locals.next || '' %>">
+
+  <div class="field">
+    <label for="identifier">Email atau nomor telepon</label>
+    <input id="identifier" name="identifier" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="150" value="<%= form.identifier || '' %>" placeholder="nama@email.com atau 0812 3456 7890" <%= locals.error ? '' : 'autofocus' %>>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <div class="pw">
+      <input id="password" name="password" type="password" autocomplete="current-password" required maxlength="72">
+      <button type="button" data-reveal="password" aria-pressed="false">Lihat</button>
+    </div>
+  </div>
+
+  <button class="btn" type="submit" data-busy="Memeriksa…">Masuk</button>
+</form>
+
+<p class="swap">Belum punya akun? <a href="/daftar">Buat akun</a></p>
+<p class="fine">Lupa password? <% if (contact.wa) { %><a href="<%= waLink(contact.wa, 'Halo admin Sandyakala Rasa, saya lupa password akun saya. Mohon dibuatkan tautan atur ulang.') %>" target="_blank" rel="noopener">Minta tautan atur ulang ke admin</a>, <% } else { %>Hubungi admin, <% } %>nanti dikirimi tautan untuk membuat password baru. Lihat juga <a href="/bantuan" target="_blank" rel="noopener">halaman bantuan</a>.</p>

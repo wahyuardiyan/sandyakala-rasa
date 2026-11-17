@@ -1,0 +1,13 @@
+<%# Ringkasan rating: angka besar, bintang, dan batang sebaran per bintang. Parameter: rate {count, avg, dist} %>
+<div class="sr-ratebox">
+  <div class="big">
+    <p class="num"><%= rate.count ? rate.avg.toFixed(1) : '–' %></p>
+    <p class="st" aria-hidden="true"><%= '★'.repeat(Math.round(rate.avg)) %><span><%= '★'.repeat(5 - Math.round(rate.avg)) %></span></p>
+    <p class="cnt"><%= rate.count ? rate.count + ' ulasan' : 'Belum ada ulasan' %></p>
+  </div>
+  <ul class="bars" aria-label="Sebaran bintang">
+    <% [5, 4, 3, 2, 1].forEach(function (n) { const c = rate.dist[n]; const pct = rate.count ? Math.round(c / rate.count * 100) : 0; %>
+      <li><span class="lb"><%= n %> ★</span><span class="bar"><i style="width:<%= pct %>%"></i></span><span class="ct"><%= c %></span></li>
+    <% }) %>
+  </ul>
+</div>

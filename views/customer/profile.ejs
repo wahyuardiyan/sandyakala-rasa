@@ -1,0 +1,14 @@
+<header class="sr-pagehead"><h1>Profil saya</h1><p>Nama, telepon, dan alamat ini terisi otomatis saat checkout.</p></header>
+<% if (errors.length) { %><div class="sr-notice bad" role="alert"><% errors.forEach(function (e) { %><p><%= e %></p><% }) %></div><% } %>
+<form method="post" action="/profil" class="sr-form sr-narrow">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="f"><label for="name">Nama lengkap</label><input id="name" name="name" required maxlength="100" value="<%= user.name %>" autocomplete="name"></div>
+  <div class="f"><label for="email">Email</label><input id="email" value="<%= user.email || '-' %>" disabled></div>
+  <div class="f"><label for="phone">Nomor telepon</label><input id="phone" name="phone" maxlength="20" value="<%= user.phone || '' %>" placeholder="0812 3456 7890" autocomplete="tel"></div>
+  <div class="f"><label for="address">Alamat bawaan</label><textarea id="address" name="address" rows="3" maxlength="500"><%= user.address || '' %></textarea></div>
+  <h2 class="sr-subh">Ganti password</h2>
+  <p class="hint">Kosongkan dua kolom ini kalau tidak ingin mengganti password.</p>
+  <div class="f"><label for="current_password">Password saat ini</label><input id="current_password" name="current_password" type="password" autocomplete="current-password"></div>
+  <div class="f"><label for="new_password">Password baru (minimal 8 karakter)</label><input id="new_password" name="new_password" type="password" autocomplete="new-password" minlength="8" maxlength="72"></div>
+  <button class="sr-btn lg">Simpan perubahan</button>
+</form>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf4ea">
+  <title><%= locals.title ? title + ' · ' : '' %>Sandyakala Rasa</title>
+  <link rel="icon" href="/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+  <noscript><style>.reveal { grid-template-rows: 1fr; } .reveal > div { visibility: visible !important; }</style></noscript>
+</head>
+<body>
+  <div class="auth">
+    <aside class="scene">
+      <svg class="dusk" viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4a2b45"/>
+            <stop offset=".3" stop-color="#8a4a5c"/>
+            <stop offset=".5" stop-color="#d36a58"/>
+            <stop offset=".6" stop-color="#f08f4a"/>
+          </linearGradient>
+          <radialGradient id="halo" cx="400" cy="600" r="430" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffc56b" stop-opacity=".75"/>
+            <stop offset=".45" stop-color="#f2a33a" stop-opacity=".22"/>
+            <stop offset="1" stop-color="#f2a33a" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="disc" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd58f"/>
+            <stop offset="1" stop-color="#f08a2f"/>
+          </linearGradient>
+          <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#a24d2d"/>
+            <stop offset=".5" stop-color="#6a3022"/>
+            <stop offset="1" stop-color="#4a261d"/>
+          </linearGradient>
+          <clipPath id="above"><rect x="0" y="0" width="800" height="600"/></clipPath>
+          <filter id="grain" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+            <feColorMatrix type="saturate" values="0"/>
+          </filter>
+        </defs>
+        <rect width="800" height="1000" fill="#4a261d"/>
+        <g clip-path="url(#above)">
+          <rect width="800" height="600" fill="url(#sky)"/>
+          <rect width="800" height="600" fill="url(#halo)"/>
+          <g class="sun-rig"><circle cx="400" cy="600" r="150" fill="url(#disc)"/></g>
+          <path d="M0 600 L0 540 C60 516 112 552 178 530 C236 511 270 536 318 560 C352 577 372 590 392 600 Z" fill="#7a3d44" opacity=".82"/>
+          <path d="M800 600 L800 536 C738 512 690 548 628 534 C572 521 530 552 488 570 C462 581 440 592 424 600 Z" fill="#7a3d44" opacity=".82"/>
+          <path d="M0 600 L0 572 C80 554 140 582 226 568 C290 558 330 586 372 600 Z" fill="#46232a"/>
+          <path d="M800 600 L800 576 C724 558 664 584 586 572 C524 563 480 588 442 600 Z" fill="#46232a"/>
+        </g>
+        <rect x="0" y="600" width="800" height="400" fill="url(#sea)"/>
+        <g class="reflect" fill="#ffd08a">
+          <rect x="300" y="610" width="200" height="5" rx="2.5" opacity=".85"/>
+          <rect x="327" y="626" width="146" height="4" rx="2" opacity=".62"/>
+          <rect x="350" y="641" width="100" height="4" rx="2" opacity=".5"/>
+          <rect x="268" y="655" width="64" height="3" rx="1.5" opacity=".3"/>
+          <rect x="372" y="656" width="64" height="3" rx="1.5" opacity=".4"/>
+          <rect x="388" y="672" width="84" height="3" rx="1.5" opacity=".26"/>
+          <rect x="336" y="690" width="58" height="3" rx="1.5" opacity=".2"/>
+          <rect x="412" y="710" width="40" height="2.5" rx="1.25" opacity=".14"/>
+        </g>
+        <rect width="800" height="1000" filter="url(#grain)" opacity=".1" style="mix-blend-mode:overlay"/>
+      </svg>
+      <p class="note">
+        <b>Sandyakala</b>
+        <span>senja; saat matahari terbenam dan hari berganti malam.</span>
+        <span class="tag">Di setiap rasa, ada cerita.</span>
+      </p>
+    </aside>
+
+    <main class="panel">
+      <div class="panel-inner">
+        <a class="brand" href="/"><img src="/img/logo-lockup.png" alt="Sandyakala Rasa — beranda" width="128" height="107"></a>
+        <% if (locals.flash) { %><div class="alert <%= flash.type === 'error' ? '' : 'ok' %>" role="status"><%= flash.msg %></div><% } %>
+        <%- body %>
+      </div>
+    </main>
+  </div>
+  <script src="/js/auth.js" defer></script>
+</body>
+</html>

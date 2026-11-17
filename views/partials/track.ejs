@@ -1,0 +1,14 @@
+<%# Garis kemajuan pesanan. Parameter: order %>
+<% if (order.status !== 'cancelled') {
+  const pickup = order.fulfillment === 'pickup';
+  const steps = ['Dibayar', 'Diproses', pickup ? 'Siap diambil' : 'Dikirim', 'Selesai'];
+  const at = { pending_payment: -1, processing: 1, delivering: 2, completed: 3 }[order.status];
+  const cur = order.status === 'pending_payment' ? 0 : at;
+%>
+<ol class="sr-track" aria-label="Kemajuan pesanan">
+  <% steps.forEach(function (s, i) { const cls = order.status === 'pending_payment' ? (i === 0 ? 'now' : '') : (i < cur ? 'done' : (i === cur ? (order.status === 'completed' ? 'done' : 'now') : '')); %>
+    <li class="<%= cls %>"><i></i><span><%= i === 0 && order.status === 'pending_payment' ? 'Menunggu bayar' : s %></span></li>
+  <% }) %>
+</ol>
+<% if (order.status === 'delivering' && !pickup) { %><div class="sr-trackmotor"><%- include('illus', { kind: 'motor' }) %></div><% } %>
+<% } %>

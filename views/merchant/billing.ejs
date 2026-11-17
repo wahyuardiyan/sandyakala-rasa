@@ -1,0 +1,30 @@
+<section class="sr-block first">
+  <h2>Komisi</h2>
+  <% if (!cfg.enabled) { %>
+    <p>Saat ini memakai Sandyakala Rasa <b>gratis</b>. Kalau komisi mulai berlaku, kamu akan diberi tahu lebih dulu.</p>
+  <% } else if (free) { %>
+    <p>Tokomu <b>gratis komisi</b> sampai <%= freeText %>. Terima kasih sudah jadi penjual pertama kami.</p>
+  <% } else { %>
+    <p>Komisi <b><%= cfg.pct %>%</b> dari harga menu setelah diskon voucher (ongkos antar tidak dihitung), hanya untuk pesanan yang selesai. Ditagih sebulan sekali, dan tidak menambah harga yang dibayar pelanggan.</p>
+    <dl class="sr-defs">
+      <dt>Bulan ini (perkiraan)</dt><dd><%= est.count %> pesanan selesai, komisi <b><%= rp(est.amount) %></b></dd>
+    </dl>
+  <% } %>
+</section>
+<section class="sr-block">
+  <h2>Tagihan</h2>
+  <% if (!invoices.length) { %><p class="sr-empty-line">Belum ada tagihan.</p><% } else { %>
+  <div class="sr-tablewrap"><table class="sr-table"><thead><tr><th>Bulan</th><th>Pesanan</th><th>Komisi</th><th>Status</th><th>Jatuh tempo</th><th></th></tr></thead><tbody>
+    <% invoices.forEach(function (i) { const st = INVOICE_STATUS[i.status]; const late = i.status === 'unpaid' && i.due_at && new Date(i.due_at) < now; %>
+      <tr>
+        <td><b><%= monthLabel(i.period) %></b></td>
+        <td><%= i.order_count %></td>
+        <td><%= rp(i.amount) %></td>
+        <td><%- include('../partials/state', { label: late ? 'Lewat jatuh tempo' : st.label, cls: late ? 'bg-red-100' : st.cls }) %></td>
+        <td><%= i.due_at ? fmtDate(i.due_at) : '-' %></td>
+        <td><a class="sr-btn sm" href="/merchant/tagihan/<%= i.id %>"><%= i.status === 'unpaid' ? 'Bayar' : 'Buka' %></a></td>
+      </tr>
+    <% }) %>
+  </tbody></table></div>
+  <% } %>
+</section>

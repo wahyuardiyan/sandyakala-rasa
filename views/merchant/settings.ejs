@@ -1,0 +1,36 @@
+<% if (errors.length) { %><div class="sr-notice bad" role="alert"><% errors.forEach(function (e) { %><p><%= e %></p><% }) %></div><% } %>
+<form method="post" action="/merchant/toko" enctype="multipart/form-data" class="sr-split sr-form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <section>
+    <h2 class="sr-subh first">Profil toko</h2>
+    <div class="f"><label for="name">Nama toko</label><input id="name" name="name" required maxlength="100" value="<%= form.name %>"></div>
+    <div class="f"><label for="category_id">Kategori utama</label>
+      <select id="category_id" name="category_id"><option value="">Pilih kategori</option>
+        <% categories.forEach(function (c) { %><option value="<%= c.id %>" <%= Number(form.category_id) === c.id ? 'selected' : '' %>><%= c.name %></option><% }) %></select></div>
+    <div class="f"><label for="description">Deskripsi</label><textarea id="description" name="description" rows="3" maxlength="600"><%= form.description || '' %></textarea></div>
+    <div class="f"><label for="address">Alamat</label><textarea id="address" name="address" rows="2" maxlength="300"><%= form.address || '' %></textarea></div>
+    <div class="f"><label for="whatsapp">Nomor WhatsApp toko (wajib)</label><input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" maxlength="20" required value="<%= form.whatsapp || '' %>" placeholder="0812 3456 7890" autocomplete="tel"><p class="hint" style="margin:.3rem 0 0">Pelanggan memakainya untuk bertanya soal pesanan. Nomor ini tampil di halaman tokomu.</p></div>
+    <div class="f"><label for="city">Kota atau kecamatan</label><input id="city" name="city" maxlength="80" value="<%= form.city || '' %>" placeholder="Contoh: Jakarta Selatan"></div>
+    <% const all24 = form.open_time === form.close_time; %>
+    <label class="sr-check"><input type="checkbox" name="open_24" value="1" <%= all24 ? 'checked' : '' %>> Buka 24 jam (jam di bawah diabaikan)</label>
+    <div class="sr-cols2">
+      <div class="f"><label for="open_time">Jam buka</label><input id="open_time" name="open_time" type="time" value="<%= all24 ? '08:00' : form.open_time %>"></div>
+      <div class="f"><label for="close_time">Jam tutup (pilih 12:00 AM untuk tutup tengah malam / 24:00)</label><input id="close_time" name="close_time" type="time" value="<%= all24 ? '21:00' : form.close_time %>"></div>
+    </div>
+    <div class="f"><label for="delivery_fee">Ongkos antar (Rp). Isi 0 untuk gratis.</label><input id="delivery_fee" name="delivery_fee" data-rupiah inputmode="numeric" value="<%= form.delivery_fee %>"></div>
+    <label class="sr-check"><input type="checkbox" name="is_accepting" value="1" <%= form.is_accepting ? 'checked' : '' %>> Toko sedang menerima pesanan</label>
+
+    <h2 class="sr-subh">Logo dan sampul</h2>
+    <%- include('../partials/uploader', { id: 'cover', name: 'cover', label: 'Banner toko', shape: 'cover', current: form.cover, hint: 'Ideal 1800 × 600 piksel (lebar 3 kali tingginya). Foto HD boleh sampai 10 MB. Otomatis dioptimalkan dan dipotong ke bentuk banner tanpa pecah.' }) %>
+    <%- include('../partials/uploader', { id: 'logo', name: 'logo', label: 'Logo toko', shape: 'logo', current: form.logo, hint: 'Gambar persegi, minimal 400 × 400 piksel.' }) %>
+  </section>
+
+  <aside class="sr-side">
+    <h2>QRIS pembayaran</h2>
+    <p><%- include('../partials/state', { label: QRIS_STATUS[form.qris_status].label, cls: QRIS_STATUS[form.qris_status].cls }) %></p>
+    <p class="hint">Unggah <b>QRIS resmi milikmu sendiri</b> dari bank atau penyedia pembayaran. Pelanggan membayar langsung ke QRIS ini, Sandyakala Rasa tidak menerima uangnya. Setiap kali QRIS diganti, admin memeriksanya dulu.</p>
+    <%- include('../partials/uploader', { id: 'qris', name: 'qris', label: 'Gambar QRIS', shape: 'qris', current: form.qris_image, hint: 'JPG, PNG, atau WEBP, maksimal 10 MB. Pastikan QR terlihat utuh dan jelas.' }) %>
+    <div class="f"><label for="qris_name">Nama yang tampil di QRIS</label><input id="qris_name" name="qris_name" maxlength="100" value="<%= form.qris_name || '' %>" placeholder="Seperti di aplikasi pembayaran"></div>
+    <button class="sr-btn lg full">Simpan pengaturan</button>
+  </aside>
+</form>

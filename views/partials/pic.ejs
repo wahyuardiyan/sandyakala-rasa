@@ -1,0 +1,2 @@
+<%# Parameter: src, name, cls. Tanpa foto: huruf pertama nama, bukan emoji. %>
+<% if (locals.src) { %><img class="<%= locals.cls || '' %>" src="<%= src %>" alt="" loading="lazy"><% } else { %><span class="<%= locals.cls || '' %> ph" aria-hidden="true"><%= String(locals.name || '?').trim().charAt(0).toUpperCase() %></span><% } %>

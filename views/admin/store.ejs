@@ -1,0 +1,41 @@
+<p class="sr-back"><a href="/admin/toko">Kembali ke semua toko</a></p>
+<p class="meta-line"><%- include('../partials/state', { label: STORE_STATUS[shop.status].label, cls: STORE_STATUS[shop.status].cls }) %></p>
+<div class="sr-split">
+  <section>
+    <p class="sr-lines-txt"><%= shop.description || 'Tanpa deskripsi.' %></p>
+    <dl class="sr-defs">
+      <dt>Pemilik</dt><dd><%= shop.owner_name %> (<%= shop.owner_email || shop.owner_phone %>)</dd>
+      <dt>WhatsApp toko</dt><dd><%= shop.whatsapp || 'Belum diisi (toko belum bisa disetujui)' %></dd>
+      <dt>Alamat</dt><dd><%= shop.address || '-' %><%= shop.city ? ', ' + shop.city : '' %></dd>
+      <dt>Jam buka</dt><dd><%= hoursText(shop) %></dd>
+      <dt>Menu</dt><dd><%= menuCount %></dd>
+      <dt>Ongkos antar</dt><dd><%= rp(shop.delivery_fee) %></dd>
+    </dl>
+    <p><a class="sr-textlink" href="/toko/<%= shop.slug %>" target="_blank" rel="noopener">Lihat halaman toko (tab baru)</a></p>
+    <form method="post" action="/admin/toko/<%= shop.id %>/status" class="sr-actions" style="margin-top:1.25rem">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <% if (shop.status !== 'approved') { %><button name="status" value="approved" class="sr-btn">Setujui toko</button><% } %>
+      <% if (shop.status !== 'suspended') { %><button name="status" value="suspended" class="sr-btn danger">Tangguhkan</button><% } %>
+      <% if (shop.status === 'pending') { %><button name="status" value="rejected" class="sr-btn danger">Tolak</button><% } %>
+    </form>
+  </section>
+  <aside class="sr-side">
+    <h2>Verifikasi QRIS</h2>
+    <p><%- include('../partials/state', { label: QRIS_STATUS[shop.qris_status].label, cls: QRIS_STATUS[shop.qris_status].cls }) %></p>
+    <p class="hint" style="margin-top:0">Nama di QRIS: <b><%= shop.qris_name || '-' %></b></p>
+    <% if (shop.qris_image) { %>
+      <img src="<%= shop.qris_image %>" alt="QRIS" class="sr-qrthumb">
+      <p class="hint">Periksa: nama merchant di QRIS sesuai dengan toko, gambar jelas (bukan tangkapan layar yang dimodifikasi), dan bisa dipindai.</p>
+      <form method="post" action="/admin/toko/<%= shop.id %>/qris" class="sr-actions"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button name="decision" value="approve" class="sr-btn" <%= shop.qris_status === 'approved' ? 'disabled' : '' %>>Setujui QRIS</button>
+        <button name="decision" value="reject" class="sr-btn danger">Tolak QRIS</button></form>
+    <% } else { %><p class="hint">Merchant belum mengunggah QRIS.</p><% } %>
+    <h2 style="margin-top:1.75rem">Komisi</h2>
+    <p class="hint" style="margin-top:0"><%= shop.commission_free_until ? (new Date(shop.commission_free_until).getFullYear() >= 2099 ? 'Gratis komisi tanpa batas.' : 'Gratis komisi sampai ' + fmtDate(shop.commission_free_until) + '.') : 'Komisi berlaku normal.' %></p>
+    <form method="post" action="/admin/toko/<%= shop.id %>/gratis-komisi" class="sr-actions"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button name="months" value="3" class="sr-btn sm ghost">Gratis 3 bulan</button>
+      <button name="months" value="6" class="sr-btn sm ghost">6 bulan</button>
+      <button name="forever" value="1" class="sr-btn sm ghost">Selamanya</button>
+      <button class="sr-btn sm ghost">Hapus</button></form>
+  </aside>
+</div>

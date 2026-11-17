@@ -1,0 +1,19 @@
+<header class="sr-pagehead"><h1>Voucher saya</h1></header>
+<form method="post" action="/voucher/kode" class="sr-form" style="max-width:26rem;margin-bottom:1.5rem">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="f"><label for="vcode">Punya kode dari penjual? Masukkan untuk klaim</label>
+    <div class="sr-hm"><input id="vcode" name="code" maxlength="30" placeholder="Contoh: HEMAT10" autocomplete="off" style="text-transform:uppercase"><button class="sr-btn sm">Klaim</button></div></div>
+</form>
+<% if (!vouchers.length) { %>
+  <div class="sr-empty"><%- include('../partials/illus', { kind: 'basket' }) %><p>Belum ada voucher. Klaim dari halaman toko yang sedang ada promo, atau masukkan kode di atas.</p><a class="sr-btn" href="/toko">Lihat toko</a></div>
+<% } else { %>
+  <ul class="sr-vouchers">
+    <% vouchers.forEach(function (v) { %>
+      <li>
+        <div class="big"><%= v.type === 'percent' ? v.value + '%' : rp(v.value) %><small>diskon</small></div>
+        <div class="txt"><b><%= v.code %></b> · <a class="sr-textlink" href="/toko/<%= v.store_slug %>"><%= v.store_name %></a><br><span><%= voucherText(v) %></span></div>
+        <a class="sr-btn sm" href="/toko/<%= v.store_slug %>">Pakai</a>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>

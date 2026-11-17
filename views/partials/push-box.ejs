@@ -1,0 +1,11 @@
+<%# Tombol aktifkan notifikasi browser. Muncul hanya kalau admin sudah mengisi kunci VAPID. %>
+<% if (locals.pushOn) { %>
+<div class="sr-pushbox">
+  <p><b>Tahu pesananmu sudah diantar atau sampai, tanpa membuka aplikasi.</b> Tekan tombol di bawah sekali, lalu kabar muncul seperti notifikasi aplikasi biasa di HP atau laptop ini, walau tab ini ditutup.</p>
+  <p data-push-state class="sr-pushstate" aria-live="polite">Memeriksa perangkat ini…</p>
+  <div class="sr-actions">
+    <button type="button" class="sr-btn sm" data-push-on data-key="<%= locals.vapidKey %>" data-csrf="<%= csrfToken %>">Aktifkan notifikasi</button>
+    <button type="button" class="sr-linkbtn bad hidden" data-push-off data-csrf="<%= csrfToken %>">Matikan di perangkat ini</button>
+  </div>
+</div>
+<% } %>

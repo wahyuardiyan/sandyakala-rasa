@@ -1,0 +1,25 @@
+<div class="sr-chips">
+  <% tabs.forEach(function (t) { %><a href="/merchant/pesanan<%= t[0] === 'semua' ? '' : '?status=' + t[0] %>" <%- tab === t[0] ? 'class="is-active" aria-current="true"' : '' %>><%= t[1] %></a><% }) %>
+</div>
+<% if (!orders.length) { %>
+  <div class="sr-empty"><%- include('../partials/illus', { kind: 'bell' }) %><p>Belum ada pesanan di bagian ini.</p></div>
+<% } else { %>
+<ul class="sr-ords">
+  <% orders.forEach(function (o) { const st = ORDER_STATUS[o.status]; const ps = PAYMENT_STATUS[o.pay_status]; %>
+    <li>
+      <div>
+        <p class="meta">#<%= o.code %> · <%= fmtDateTime(o.created_at) %></p>
+        <h3><a href="/merchant/pesanan/<%= o.code %>"><%= o.customer_name %></a></h3>
+        <p class="meta"><a class="sr-textlink" href="tel:<%= o.customer_phone %>"><%= o.customer_phone %></a></p>
+        <p class="meta"><%= o.items.map(function (i) { return i.qty + '× ' + i.name; }).join(', ') %></p>
+      </div>
+      <div class="end">
+        <%- include('../partials/state', { label: st.label, cls: st.cls }) %>
+        <p class="meta" style="margin-top:.2rem">Bayar: <%= ps.label.toLowerCase() %></p>
+        <p class="total"><%= rp(o.total) %></p>
+        <a class="sr-textlink" href="/merchant/pesanan/<%= o.code %>"><%= o.pay_status === 'claimed' ? 'Periksa pembayaran' : 'Buka' %></a>
+      </div>
+    </li>
+  <% }) %>
+</ul>
+<% } %>

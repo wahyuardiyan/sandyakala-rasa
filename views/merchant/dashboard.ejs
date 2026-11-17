@@ -1,0 +1,55 @@
+<%
+  const lineMsg = stats.waiting > 0 ? stats.waiting + ' pesanan menunggu konfirmasimu.' : (stats.unanswered > 0 ? stats.unanswered + ' ulasan belum kamu balas.' : 'Semua beres. Semoga hari ini ramai.');
+%>
+<% if (locals.needNotify) { %><p class="sr-notice info"><b>Notifikasi pesanan belum aktif di perangkat ini.</b> Aktifkan supaya kamu dapat kabar saat ada pesanan, walau halaman ini tertutup. <a class="sr-textlink" href="/merchant/notifikasi">Aktifkan sekarang</a></p><% } %>
+<%- include('../partials/warung', { greet: greet, line: lineMsg, scene: 'cerita' }) %>
+<%
+  const steps = [
+    ['Lengkapi profil toko: kategori, alamat, nomor WhatsApp, dan jam buka.', !!(store.category_id && store.address && store.whatsapp), '/merchant/toko'],
+    ['Unggah gambar QRIS milikmu.', store.qris_status !== 'none', '/merchant/toko'],
+    ['Tambahkan menu pertama.', stats.menu > 0, '/merchant/menu/baru'],
+    ['Tunggu admin memeriksa dan menyetujui tokomu.', store.status === 'approved' && store.qris_status === 'approved', null],
+  ];
+  const setupDone = steps.every(function (s) { return s[1]; });
+%>
+<% if (stats.waiting > 0) { %>
+  <p class="sr-notice info"><b><%= stats.waiting %> pesanan</b> menunggu konfirmasi pembayaranmu. Cek aplikasi pembayaranmu, lalu konfirmasi. <a class="sr-textlink" href="/merchant/pesanan?status=perlu">Buka pesanan</a></p>
+<% } %>
+
+<% if (!setupDone) { %>
+  <section class="sr-block first">
+    <h2>Langkah awal</h2>
+    <p class="hint" style="margin-top:0">Butuh contoh? Lihat <a class="sr-textlink" href="/jualan#panduan">panduan foto dan QRIS</a>.</p>
+    <ol class="sr-checklist">
+      <% steps.forEach(function (s) { %>
+        <li class="<%= s[1] ? 'done' : '' %>"><span><%= s[0] %></span><% if (s[1]) { %><b class="ok">Selesai</b><% } else if (s[2]) { %><a class="sr-textlink" href="<%= s[2] %>">Kerjakan</a><% } else { %><b class="wait">Menunggu</b><% } %></li>
+      <% }) %>
+    </ol>
+  </section>
+<% } %>
+
+<dl class="sr-figs">
+  <div><dt>Total pesanan</dt><dd data-count="<%= stats.orders %>"><%= stats.orders %></dd></div>
+  <div><dt>Pendapatan tercatat</dt><dd data-count="<%= stats.revenue %>" data-rp="1"><%= rp(stats.revenue) %></dd><small>Dari pesanan yang pembayarannya sudah kamu konfirmasi.</small></div>
+  <div><dt>Menu aktif</dt><dd data-count="<%= stats.menu %>"><%= stats.menu %></dd></div>
+  <div><dt>Rating toko</dt><dd><%= stats.rate.count ? '★ ' + stats.rate.avg.toFixed(1) : '–' %></dd><small><%= stats.rate.count ? 'Dari ' + stats.rate.count + ' ulasan. ' : 'Belum ada ulasan. ' %><a class="sr-textlink" href="/merchant/ulasan">Buka ulasan</a></small></div>
+</dl>
+
+<section class="sr-block first">
+  <h2>Penjualan 7 hari terakhir</h2>
+  <div class="sr-chart"><%- chart %></div>
+</section>
+
+<section class="sr-block">
+  <div class="head"><h2>Pesanan terbaru</h2><a class="sr-textlink" href="/merchant/pesanan">Lihat semua</a></div>
+  <% if (!recent.length) { %><div class="sr-empty"><%- include('../partials/illus', { kind: 'bell' }) %><p>Belum ada pesanan. Pesanan dari pelanggan akan muncul di sini.</p></div><% } else { %>
+  <ul class="sr-ords">
+    <% recent.forEach(function (o) { const st = ORDER_STATUS[o.status]; %>
+      <li>
+        <div><p class="meta">#<%= o.code %> · <%= fmtDateTime(o.created_at) %></p><h3><a href="/merchant/pesanan/<%= o.code %>"><%= o.customer_name %></a></h3><p class="meta"><%= o.items.map(function (i) { return i.qty + '× ' + i.name; }).join(', ') %></p></div>
+        <div class="end"><%- include('../partials/state', { label: st.label, cls: st.cls }) %><p class="total"><%= rp(o.total) %></p></div>
+      </li>
+    <% }) %>
+  </ul>
+  <% } %>
+</section>

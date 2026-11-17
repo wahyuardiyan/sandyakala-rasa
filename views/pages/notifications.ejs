@@ -1,0 +1,19 @@
+<section class="sr-block first">
+  <%- include('../partials/push-box') %>
+  <button type="button" class="sr-soundbtn" data-sound-toggle>Suara notifikasi</button>
+  <% if (!items.length) { %>
+    <div class="sr-empty"><%- include('../partials/illus', { kind: 'bell' }) %><p>Belum ada notifikasi. Kabar tentang pesananmu akan muncul di sini.</p></div>
+  <% } else { %>
+  <ul class="sr-notifs">
+    <% items.forEach(function (n) { %>
+      <li class="<%= wasUnread.has(n.id) ? 'new' : '' %>">
+        <% if (n.url) { %><a href="<%= n.url %>"><% } %>
+          <b><%= n.title %></b>
+          <% if (n.body) { %><span class="txt"><%= n.body %></span><% } %>
+          <span class="when"><%= fmtDateTime(n.created_at) %></span>
+        <% if (n.url) { %></a><% } %>
+      </li>
+    <% }) %>
+  </ul>
+  <% } %>
+</section>

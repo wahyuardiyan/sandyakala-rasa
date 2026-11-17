@@ -1,0 +1,25 @@
+<div class="sr-toolbar">
+  <p><%= products.length %> menu</p>
+  <a href="/merchant/menu/baru" class="sr-btn">Tambah menu</a>
+</div>
+<% if (!products.length) { %>
+  <div class="sr-empty"><%- include('../partials/illus', { kind: 'plate' }) %><p>Belum ada menu. Tambahkan menu pertamamu supaya pelanggan bisa memesan.</p><a href="/merchant/menu/baru" class="sr-btn">Tambah menu pertama</a></div>
+<% } else { %>
+<ul class="sr-lines">
+  <% products.forEach(function (p) { %>
+    <li class="<%= p.is_available ? '' : 'is-dim' %>">
+      <%- include('../partials/pic', { src: p.image, name: p.name, cls: 'pic' }) %>
+      <div class="txt">
+        <h3><%= p.name %> <% if (!p.is_available) { %><span class="tag">Nonaktif</span><% } %></h3>
+        <p class="meta"><%= p.category_name || 'Tanpa kategori' %>, stok <%= p.stock === null ? 'tidak dibatasi' : p.stock %></p>
+        <p class="price"><%= rp(p.price) %></p>
+      </div>
+      <div class="act">
+        <a href="/merchant/menu/<%= p.id %>/ubah" class="sr-textlink">Ubah</a>
+        <form method="post" action="/merchant/menu/<%= p.id %>/toggle"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn"><%= p.is_available ? 'Nonaktifkan' : 'Aktifkan' %></button></form>
+        <form method="post" action="/merchant/menu/<%= p.id %>/hapus" data-confirm="Hapus menu &quot;<%= p.name %>&quot;? Riwayat pesanan lama tetap aman."><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn bad">Hapus</button></form>
+      </div>
+    </li>
+  <% }) %>
+</ul>
+<% } %>

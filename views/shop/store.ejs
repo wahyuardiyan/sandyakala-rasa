@@ -1,0 +1,104 @@
+<% const accepting = shop.is_accepting && open && shop.qris_status === 'approved' && shop.status === 'approved'; %>
+<% const canOrder = user && user.role === 'customer'; %>
+<% if (preview) { %><div class="sr-wrap"><p class="sr-flash">Pratinjau: toko ini belum tampil untuk publik (<%= STORE_STATUS[shop.status].label %>).</p></div><% } %>
+
+<% if (shop.cover) { %><div class="sr-cover"><img src="<%= shop.cover %>" alt=""></div><% } else { %><div class="sr-cover plain" aria-hidden="true"></div><% } %>
+
+<div class="sr-wrap">
+  <header class="sr-shophead">
+    <%- include('../partials/pic', { src: shop.logo, name: shop.name, cls: 'logo' }) %>
+    <div>
+      <h1><%= shop.name %></h1>
+      <p class="meta"><%= shop.category_name || 'Kuliner' %><%= shop.city ? ' di ' + shop.city : '' %></p>
+      <p class="meta"><%- shop.review_count > 0 ? '<b>★ ' + stars(shop.rating_avg) + '</b> dari ' + shop.review_count + ' ulasan' : 'Belum ada ulasan' %></p>
+      <% if (canOrder) { %><form method="post" action="/favorit/<%= shop.id %>" class="sr-favform"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-favbtn<%= fav ? ' on' : '' %>" aria-pressed="<%= fav ? 'true' : 'false' %>"><%= fav ? '♥ Tersimpan di favorit' : '♡ Simpan toko' %></button></form><% } %>
+      <p class="state <%= accepting && open ? 'on' : 'off' %>"><%= !shop.is_accepting ? 'Sedang tidak menerima pesanan' : (open ? (isAllDay(shop) ? 'Buka 24 jam' : 'Buka sampai ' + closeText(shop)) : 'Buka lagi pukul ' + shop.open_time) %></p>
+    </div>
+  </header>
+
+  <div class="sr-shopbody">
+    <section>
+      <div class="sr-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" class="is-active" data-tab-btn="menu">Menu</button>
+        <button type="button" role="tab" aria-selected="false" data-tab-btn="ulasan">Ulasan (<%= shop.review_count %>)</button>
+        <button type="button" role="tab" aria-selected="false" data-tab-btn="tentang">Tentang</button>
+      </div>
+
+      <div data-tab-panel="menu">
+        <% if (promos.length) { %><div class="sr-promo"><% promos.forEach(function (v) { %>
+          <div class="sr-promoitem"><p><b><%= v.code %></b> · <%= voucherText(v) %></p>
+            <% if (canOrder) { %><% if (claimed.indexOf(v.id) > -1) { %><span class="sr-st ok">Sudah diklaim</span><% } else { %><form method="post" action="/voucher/klaim/<%= v.id %>"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-btn sm">Klaim</button></form><% } %><% } else if (!user) { %><a class="sr-textlink" href="/masuk">Masuk untuk klaim</a><% } %></div>
+        <% }) %></div><% } %>
+        <% if (!accepting) { %><p class="sr-notice">Toko ini belum menerima pesanan saat ini<%= !open && shop.is_accepting ? ' karena sedang di luar jam buka (buka lagi pukul ' + shop.open_time + ')' : (shop.qris_status !== 'approved' ? ' karena pembayaran QRIS-nya belum aktif' : '') %>.</p><% } %>
+        <input id="menu-search" type="search" class="sr-line" placeholder="Cari menu di toko ini" maxlength="60" aria-label="Cari menu">
+        <% if (groups.length > 1) { %>
+          <div class="sr-chips">
+            <button type="button" data-cat-btn="all" class="is-active">Semua</button>
+            <% groups.forEach(function (g) { %><button type="button" data-cat-btn="<%= g.name %>"><%= g.name %></button><% }) %>
+          </div>
+        <% } %>
+        <% if (!groups.length) { %><p class="sr-empty-line">Penjual belum menambahkan menu.</p><% } %>
+        <% groups.forEach(function (g) { %>
+          <div data-menu-group="<%= g.name %>" class="sr-menugroup">
+            <h2><%= g.name %></h2>
+            <ul class="sr-menu-items">
+              <% g.items.forEach(function (p) { %>
+                <li data-menu-item data-name="<%= p.name.toLowerCase() %>" class="<%= p.is_available ? '' : 'is-off' %>">
+                  <%- include('../partials/pic', { src: p.image, name: p.name, cls: 'pic' }) %>
+                  <div class="txt">
+                    <h3><%= p.name %></h3>
+                    <% if (p.description) { %><p class="desc"><%= p.description %></p><% } %>
+                    <p class="price"><%= rp(p.price) %><% if (p.stock !== null && p.stock <= 5 && p.stock > 0) { %><span class="low">sisa <%= p.stock %></span><% } %></p>
+                  </div>
+                  <div class="act">
+                    <% if (p.is_available && (p.stock === null || p.stock > 0)) { %>
+                      <% if (canOrder) { %>
+                        <form method="post" action="/keranjang/tambah">
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="product_id" value="<%= p.id %>"><input type="hidden" name="qty" value="1">
+                          <button class="sr-btn sm" <%= accepting ? '' : 'disabled' %>>Tambah</button>
+                        </form>
+                      <% } else if (!user) { %>
+                        <a class="sr-textlink" href="/masuk?next=<%= encodeURIComponent('/toko/' + shop.slug) %>">Masuk untuk memesan</a>
+                      <% } %>
+                    <% } else { %><span class="soldout">Habis</span><% } %>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        <% }) %>
+      </div>
+
+      <div data-tab-panel="ulasan" class="hidden">
+        <%- include('../partials/rating-box', { rate: rate }) %>
+        <% if (!reviews.length) { %><p class="sr-empty-line">Belum ada ulasan. Ulasan muncul setelah pelanggan menyelesaikan pesanan.</p><% } %>
+        <ul class="sr-reviews">
+          <% reviews.forEach(function (r) { %>
+            <li>
+              <p class="who"><b><%= r.user_name %></b> <span><%= fmtDate(r.created_at) %></span></p>
+              <p class="stars" aria-label="<%= r.rating %> dari 5"><%= '★'.repeat(r.rating) %><span><%= '★'.repeat(5 - r.rating) %></span></p>
+              <% if (r.comment) { %><p class="txt"><%= r.comment %></p><% } %>
+              <% if (r.reply) { %><p class="reply"><b>Balasan penjual</b><%= r.reply %></p><% } %>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <div data-tab-panel="tentang" class="hidden">
+        <p class="sr-about"><%= shop.description || 'Penjual belum menulis deskripsi toko.' %></p>
+      </div>
+    </section>
+
+    <aside class="sr-info">
+      <h2>Informasi toko</h2>
+      <dl>
+        <dt>Alamat</dt><dd><%= shop.address || 'Belum diisi' %><%= shop.city ? ', ' + shop.city : '' %></dd>
+        <dt>Jam buka</dt><dd><%= hoursText(shop) %></dd>
+        <dt>Hubungi penjual</dt><dd><% if (shop.whatsapp) { %><a class="sr-textlink" href="<%= waLink(shop.whatsapp, 'Halo ' + shop.name + ', saya mau tanya soal menu.') %>" target="_blank" rel="noopener">Chat WhatsApp</a><% } else { %>Belum ada kontak<% } %></dd>
+        <dt>Ongkos antar</dt><dd><%= shop.delivery_fee ? rp(shop.delivery_fee) : 'Gratis' %></dd>
+        <dt>Pembayaran</dt><dd>QRIS, langsung ke penjual. Kodenya muncul setelah kamu checkout.</dd>
+      </dl>
+    </aside>
+  </div>
+</div>
+<% if (canOrder && cartCount > 0) { %><a class="sr-cartbar" href="/keranjang"><span><%= cartCount %> item di keranjang</span>Lihat keranjang &rarr;</a><% } %>

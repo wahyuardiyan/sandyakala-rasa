@@ -1,0 +1,10 @@
+<p class="sr-back"><a href="/admin/pengguna">Kembali ke pengguna</a></p>
+<p class="sr-lines-txt" style="margin:0 0 1.25rem">Tautan ini untuk <b><%= target.name %></b> (<%= target.email || target.phone %>). Kirimkan hanya kepada pemilik akun. Berlaku sampai <b><%= fmtDateTime(expires) %></b> dan hanya bisa dipakai sekali.</p>
+<div class="sr-form sr-narrow">
+  <div class="f"><label for="link">Tautan atur ulang</label><input id="link" value="<%= link %>" readonly onclick="this.select()"></div>
+  <div class="sr-actions">
+    <button type="button" class="sr-btn" data-copy="link">Salin tautan</button>
+    <% if (target.phone) { %><a class="sr-btn ghost" target="_blank" rel="noopener" href="<%= waLink(target.phone, 'Halo ' + target.name + ', ini tautan untuk mengatur ulang password Sandyakala Rasa-mu (berlaku 1 jam, sekali pakai): ' + link) %>">Kirim lewat WhatsApp</a><% } %>
+  </div>
+  <p class="hint">Tautan ini hanya tampil sekali di halaman ini. Kalau hilang, buat yang baru dari daftar pengguna.</p>
+</div>

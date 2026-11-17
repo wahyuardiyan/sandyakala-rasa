@@ -1,0 +1,21 @@
+<section class="sr-block first">
+  <h2>Checklist legalitas</h2>
+  <p class="hint">Ini daftar pengingat, <b>bukan nasihat hukum</b>. Aturan bisa berubah, jadi pastikan lewat sumber resmi (OSS, Komdigi, DJP) atau konsultasi ke ahli. Selesai <%= doneCount %> dari <%= items.length %>.</p>
+  <% if (operatorEmpty) { %><p class="sr-note">OPERATOR_NAME di .env masih kosong, jadi identitas pengelola belum tampil di halaman Syarat dan Privasi.</p><% } %>
+  <ul class="sr-legal">
+    <% items.forEach(function (i) { %>
+      <li id="<%= i.id %>" class="<%= i.done ? 'done' : '' %>">
+        <form method="post" action="/admin/legalitas/<%= i.id %>">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="done" value="<%= i.done ? '0' : '1' %>">
+          <button class="sr-legal-box" aria-label="<%= i.done ? 'Tandai belum' : 'Tandai selesai' %>"><%= i.done ? '✓' : '' %></button>
+        </form>
+        <div>
+          <b><%= i.title %></b>
+          <p><%= i.text %></p>
+          <% if (i.link) { %><a class="sr-textlink" href="<%= i.link %>" target="_blank" rel="noopener"><%= i.link.replace('https://', '') %></a><% } %>
+        </div>
+      </li>
+    <% }) %>
+  </ul>
+</section>

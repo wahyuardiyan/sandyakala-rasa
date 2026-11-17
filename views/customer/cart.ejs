@@ -1,0 +1,54 @@
+<header class="sr-pagehead">
+  <h1>Keranjang</h1>
+  <% if (items.length) { %><p>Pesanan dari <a class="sr-textlink" href="/toko/<%= store.slug %>"><%= store.name %></a>. Satu keranjang hanya untuk satu toko.</p><% } %>
+</header>
+<% if (!items.length) { %>
+  <div class="sr-empty">
+    <%- include('../partials/illus', { kind: 'basket' }) %>
+    <p>Keranjangmu masih kosong. Pilih menu dari salah satu toko, lalu kembali ke sini.</p>
+    <a href="/toko" class="sr-btn">Lihat toko</a>
+  </div>
+<% } else { %>
+  <% const blocked = items.some(function (i) { return !i.is_available; }); %>
+  <div class="sr-split">
+    <section>
+      <ul class="sr-lines">
+        <% items.forEach(function (it) { %>
+          <li class="<%= it.is_available ? '' : 'is-off' %>">
+            <%- include('../partials/pic', { src: it.image, name: it.name, cls: 'pic' }) %>
+            <div class="txt">
+              <h3><%= it.name %></h3>
+              <p class="price"><%= rp(it.price) %></p>
+              <% if (!it.is_available) { %><p class="warn">Menu ini sudah tidak tersedia. Hapus dari keranjang.</p><% } %>
+            </div>
+            <div class="act">
+              <form method="post" action="/keranjang/ubah" class="sr-qty">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="item_id" value="<%= it.item_id %>">
+                <button name="qty" value="<%= it.qty - 1 %>" aria-label="Kurangi">−</button>
+                <span><%= it.qty %></span>
+                <button name="qty" value="<%= it.qty + 1 %>" aria-label="Tambah">+</button>
+              </form>
+              <form method="post" action="/keranjang/ubah">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="item_id" value="<%= it.item_id %>"><input type="hidden" name="qty" value="0">
+                <button class="sr-linkbtn">Hapus</button>
+              </form>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+      <form method="post" action="/keranjang/kosongkan" data-confirm="Kosongkan seluruh keranjang?" class="sr-more">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="sr-linkbtn bad">Kosongkan keranjang</button>
+      </form>
+    </section>
+    <aside class="sr-side">
+      <h2>Ringkasan</h2>
+      <dl class="sr-sum">
+        <div><dt>Subtotal (<%= count %> item)</dt><dd><%= rp(subtotal) %></dd></div>
+      </dl>
+      <p class="hint">Ongkos antar dihitung di langkah berikutnya.</p>
+      <% if (blocked) { %><p class="sr-notice bad">Hapus menu yang tidak tersedia untuk melanjutkan.</p>
+      <button class="sr-btn lg full" disabled>Lanjut ke checkout</button>
+      <% } else { %><a href="/checkout" class="sr-btn lg full">Lanjut ke checkout</a><% } %>
+    </aside>
+  </div>
+<% } %>
