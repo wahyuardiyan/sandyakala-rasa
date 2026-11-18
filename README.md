@@ -1,6 +1,31 @@
 # Sandyakala Rasa — Marketplace UMKM Kuliner Lokal
 
-*Di Setiap Rasa, Ada Cerita.*
+<!-- tampilan-aplikasi:mulai -->
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-5FA04E?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Status](https://img.shields.io/badge/status-dalam%20pengembangan-orange)
+
+> **Di setiap rasa, ada cerita.** Marketplace UMKM kuliner lokal: penjual membuat toko online sendiri, pelanggan memesan lalu membayar langsung ke penjual lewat QRIS.
+
+## Tampilan aplikasi
+
+<p align="center">
+  <img src="docs/screenshots/01-beranda.jpg" alt="Beranda Sandyakala Rasa dengan nuansa senja" width="860">
+</p>
+
+| Halaman toko | Checkout |
+|---|---|
+| <img src="docs/screenshots/02-halaman-toko.jpg" alt="Halaman toko dan menu"> | <img src="docs/screenshots/03-checkout.jpg" alt="Checkout pesanan"> |
+
+| Pesanan di dashboard penjual | Struk pesanan |
+|---|---|
+| <img src="docs/screenshots/04-pesanan-merchant.jpg" alt="Detail pesanan di dashboard penjual dengan konfirmasi pembayaran"> | <img src="docs/screenshots/05-struk.jpg" alt="Struk pesanan"> |
+
+> Data pada tangkapan layar adalah data uji. Nomor telepon, alamat, dan kode QR sengaja diburamkan.
+<!-- tampilan-aplikasi:selesai -->
+
 
 Versi Node.js (Express + EJS + Tailwind) dari blueprint V1: marketplace, toko merchant, menu,
 keranjang, checkout, pembayaran QRIS langsung ke merchant (konfirmasi manual), pesanan,
